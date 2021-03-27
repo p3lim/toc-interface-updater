@@ -10,7 +10,7 @@
 }
 
 gameVersions="$(curl -sSLH"X-API-Token: $CF_API_KEY" "https://wow.curseforge.com/api/game/versions")"
-if jq '.errorCode' <<< "$gameVersions"; then
+if jq '.errorCode' <<< "$gameVersions" 2>/dev/null; then
 	# if this doesn't fail then we have an error
 	echo "Error: $(jq -r '.errorMessage' <<< "$gameVersions")"
 	exit 1
@@ -28,7 +28,7 @@ if [[ -z "$retailVersion" ]] || [[ -z "$classicVersion" ]]; then
 fi
 
 interfaceVersions="$(curl -sSLH"X-API-Token: $WOWI_API_TOKEN" "https://api.wowinterface.com/addons/compatible.json")"
-if jq '.ERROR' <<< "$interfaceVersions"; then
+if jq '.ERROR' <<< "$interfaceVersions" 2>/dev/null; then
 	# if this doesn't fail then we have an error
 	echo "Error: $(jq -r '.ERROR' <<< "$interfaceVersions")"
 	exit 1
