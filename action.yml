@@ -1,0 +1,10 @@
+name: TOC Interface Updater
+description: Updates Interface versions found in World of Warcraft TOC metadata files
+branding:
+  icon: tag
+  color: yellow
+runs:
+  using: composite
+  steps:
+    - run: $GITHUB_ACTION_PATH/update.sh
+      shell: bash
