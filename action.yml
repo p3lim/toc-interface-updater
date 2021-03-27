@@ -6,5 +6,5 @@ branding:
 runs:
   using: composite
   steps:
-    - run: ${{ github.action_path }}/update.sh
+    - run: bash ${{ github.action_path }}/update.sh
       shell: bash
