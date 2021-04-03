@@ -37,8 +37,8 @@ elif [[ -z "$interfaceVersions" ]]; then
 	exit 1
 fi
 
-retailInterfaceVersion="$(jq -r '.[] | select(.id == "'"$retailVersion"'") | .interface' <<< "$interfaceVersions")"
-classicInterfaceVersion="$(jq -r '.[] | select(.id == "'"$classicVersion"'") | .interface' <<< "$interfaceVersions")"
+retailInterfaceVersion="$(jq -r --arg v "$retailVersion" '.[] | select(.id == $v) | .interface' <<< "$interfaceVersions")"
+classicInterfaceVersion="$(jq -r --arg v "$classicVersion" '.[] | select(.id == $v) | .interface' <<< "$interfaceVersions")"
 
 if [[ -z "$retailInterfaceVersion" ]] || [[ -z "$classicInterfaceVersion" ]]; then
 	echo "Failed to get interface version from WoWInterface"
