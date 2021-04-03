@@ -28,7 +28,7 @@ retailVersion="$(jq -r 'map(select(.gameVersionTypeID == 517)) | max_by(.id) | .
 classicVersion="$(jq -r 'map(select(.gameVersionTypeID == 67408)) | max_by(.id) | .name' <<< "$gameVersions")"
 crusadeVersion="$(jq -r 'map(select(.gameVersionTypeID == 73246)) | max_by(.id) | .name' <<< "$gameVersions")"
 
-if [[ -z "$retailVersion" ]] || [[ -z "$classicVersion" ]] || [[ -z "$classicVersion" ]]; then
+if [[ -z "$retailVersion" ]] || [[ -z "$classicVersion" ]] || [[ -z "$crusadeVersion" ]]; then
 	echo "Failed to get game version from CurseForge"
 	exit 1
 fi
