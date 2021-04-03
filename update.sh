@@ -9,6 +9,9 @@
 	exit 1
 }
 
+# dictates which Interface version will be used by default
+BASE_VERSION="${1:-retail}"
+
 # query CurseForge for the latest game version (e.g. 9.0.5)
 gameVersions="$(curl -sSLH"X-API-Token: $CF_API_KEY" "https://wow.curseforge.com/api/game/versions")"
 if jq '.errorCode' <<< "$gameVersions" 2>/dev/null; then
@@ -54,7 +57,12 @@ fi
 # write to TOC files
 while read -r file; do
 	# TODO: check/output if we actully made any changes
-	sed -ri 's/^(## Interface: ).*$/\1'"$retailInterfaceVersion"'/' "$file"
+	case "${BASE_VERSION,,}" in
+		retail) sed -ri 's/^(## Interface: ).*$/\1'"$retailInterfaceVersion"'/' "$file" ;;
+		classic) sed -ri 's/^(## Interface: ).*$/\1'"$classicInterfaceVersion"'/' "$file" ;;
+		crusade) sed -ri 's/^(## Interface: ).*$/\1'"$crusadeInterfaceVersion"'/' "$file" ;;
+	esac
+
 	sed -ri 's/^(## Interface-Retail: ).*$/\1'"$retailInterfaceVersion"'/' "$file"
 	sed -ri 's/^(## Interface-Classic: ).*$/\1'"$classicInterfaceVersion"'/' "$file"
 	sed -ri 's/^(## Interface-BC: ).*$/\1'"$crusadeInterfaceVersion"'/' "$file"

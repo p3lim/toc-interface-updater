@@ -3,8 +3,12 @@ description: Updates Interface versions found in World of Warcraft TOC metadata 
 branding:
   icon: tag
   color: yellow
+inputs:
+  base:
+    description: Interface version to default to (retail|classic|crusade)
+    default: retail
 runs:
   using: composite
   steps:
-    - run: bash ${{ github.action_path }}/update.sh
+    - run: bash ${{ github.action_path }}/update.sh "${{ inputs.base }}"
       shell: bash
