@@ -56,7 +56,8 @@ fi
 
 # write to TOC files
 while read -r file; do
-	# TODO: check/output if we actully made any changes
+	before="$(md5sum $file)"
+
 	case "${BASE_VERSION,,}" in
 		retail) sed -ri 's/^(## Interface: ).*$/\1'"$retailInterfaceVersion"'/' "$file" ;;
 		classic) sed -ri 's/^(## Interface: ).*$/\1'"$classicInterfaceVersion"'/' "$file" ;;
@@ -67,5 +68,7 @@ while read -r file; do
 	sed -ri 's/^(## Interface-Classic: ).*$/\1'"$classicInterfaceVersion"'/' "$file"
 	sed -ri 's/^(## Interface-BC: ).*$/\1'"$crusadeInterfaceVersion"'/' "$file"
 
-	echo "Updated $file"
+	if [[ "$(md5sum $file)" != "$before" ]]; then
+		echo "Updated $file"
+	fi
 done < <(find . -name '*.toc')
