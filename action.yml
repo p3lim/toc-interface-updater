@@ -5,7 +5,7 @@ branding:
   color: yellow
 inputs:
   base:
-    description: Interface version to default to (retail|classic|crusade)
+    description: Interface version to default to (retail|classic|bcc)
     default: retail
 runs:
   using: composite

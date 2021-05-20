@@ -1,6 +1,6 @@
 ## Interface: 70300
 ## Interface-Retail: 70300
 ## Interface-Classic: 10300
-## Interface-BC: 20000
+## Interface-BCC: 20000
 
 file.lua

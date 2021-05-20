@@ -6,7 +6,7 @@ This script will parse `*.toc` files (World of Warcraft AddOn metadata file) and
 ## Interface: NNNNN
 ## Interface-Retail: NNNNN
 ## Interface-Classic: NNNNN
-## Interface-BC: NNNNN
+## Interface-BCC: NNNNN
 ```
 
 These will be updated by parsing CurseForge and WoWInterface APIs.
@@ -33,7 +33,7 @@ bash update.sh
 You can use this in a GitHub action workflow by referencing `p3lim/toc-interface-updater@v1`.
 
 Options:
-- `base` - dictates which version `## Interface:` will be set to, one of "retail", "classic" or "crusade"
+- `base` - dictates which version `## Interface:` will be set to, one of "retail", "classic" or "bcc"
   - _optional, defaults to "retail"_
 
 #### Example

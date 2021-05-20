@@ -26,9 +26,9 @@ fi
 # map game versions to variables
 retailVersion="$(jq -r 'map(select(.gameVersionTypeID == 517)) | max_by(.id) | .name' <<< "$gameVersions")"
 classicVersion="$(jq -r 'map(select(.gameVersionTypeID == 67408)) | max_by(.id) | .name' <<< "$gameVersions")"
-crusadeVersion="$(jq -r 'map(select(.gameVersionTypeID == 73246)) | max_by(.id) | .name' <<< "$gameVersions")"
+bccVersion="$(jq -r 'map(select(.gameVersionTypeID == 73246)) | max_by(.id) | .name' <<< "$gameVersions")"
 
-if [[ -z "$retailVersion" ]] || [[ -z "$classicVersion" ]] || [[ -z "$crusadeVersion" ]]; then
+if [[ -z "$retailVersion" ]] || [[ -z "$classicVersion" ]] || [[ -z "$bccVersion" ]]; then
 	echo "Failed to get game version from CurseForge"
 	exit 1
 fi
@@ -47,7 +47,7 @@ fi
 # map interface version to variables based on game version
 retailInterfaceVersion="$(jq -r --arg v "$retailVersion" '.[] | select(.id == $v) | .interface' <<< "$interfaceVersions")"
 classicInterfaceVersion="$(jq -r --arg v "$classicVersion" '.[] | select(.id == $v) | .interface' <<< "$interfaceVersions")"
-crusadeInterfaceVersion="$(jq -r --arg v "$crusadeVersion" '.[] | select(.id == $v) | .interface' <<< "$interfaceVersions")"
+bccInterfaceVersion="$(jq -r --arg v "$bccVersion" '.[] | select(.id == $v) | .interface' <<< "$interfaceVersions")"
 
 if [[ -z "$retailInterfaceVersion" ]] || [[ -z "$classicInterfaceVersion" ]]; then
 	echo "Failed to get interface version from WoWInterface"
@@ -61,12 +61,12 @@ while read -r file; do
 	case "${BASE_VERSION,,}" in
 		retail) sed -ri 's/^(## Interface: ).*$/\1'"$retailInterfaceVersion"'/' "$file" ;;
 		classic) sed -ri 's/^(## Interface: ).*$/\1'"$classicInterfaceVersion"'/' "$file" ;;
-		crusade) sed -ri 's/^(## Interface: ).*$/\1'"$crusadeInterfaceVersion"'/' "$file" ;;
+		bcc) sed -ri 's/^(## Interface: ).*$/\1'"$bccInterfaceVersion"'/' "$file" ;;
 	esac
 
 	sed -ri 's/^(## Interface-Retail: ).*$/\1'"$retailInterfaceVersion"'/' "$file"
 	sed -ri 's/^(## Interface-Classic: ).*$/\1'"$classicInterfaceVersion"'/' "$file"
-	sed -ri 's/^(## Interface-BC: ).*$/\1'"$crusadeInterfaceVersion"'/' "$file"
+	sed -ri 's/^(## Interface-BCC: ).*$/\1'"$bccInterfaceVersion"'/' "$file"
 
 	if [[ "$(md5sum "$file")" != "$before" ]]; then
 		echo "Updated $file"
