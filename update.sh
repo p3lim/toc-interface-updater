@@ -20,7 +20,7 @@ elif [[ -z "$data" ]]; then
 fi
 
 # map interface version to variables based on game version
-retailInterfaceVersion="$(jq -r --arg v 'Retail' '.[] | select(.game == $v) | .interface' <<< "$data")"
+retailInterfaceVersion="$(jq -r --arg v 'Retail' '.[] | select(.game == $v) | select(.default == true) | .interface' <<< "$data")"
 classicInterfaceVersion="$(jq -r --arg v 'Classic' '.[] | select(.game == $v) | .interface' <<< "$data")"
 bccInterfaceVersion="$(jq -r --arg v 'TBC-Classic' '.[] | select(.game == $v) | .interface' <<< "$data")"
 
