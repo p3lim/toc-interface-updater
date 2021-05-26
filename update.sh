@@ -5,8 +5,19 @@ if [[ -z "$WOWI_API_TOKEN" ]]; then
 	exit 1
 fi
 
-# dictates which Interface version will be used by default
+# let the user decide which interface version to fall back on, used for
+# the BigWigs/CurseForge packager method of declaring the interface version
 BASE_VERSION="${1:-retail}"
+case "$BASE_VERSION" in
+	retail|classic|bcc)
+		# valid options
+		;;
+	*)
+		# invalid options
+		echo "Invalid base version '$BASE_VERSION', must be one of retail/classic/bcc."
+		exit 1
+		;;
+esac
 
 # query WoWInterface API for interface versions
 data="$(curl -sSLH"X-API-Token: $WOWI_API_TOKEN" "https://api.wowinterface.com/addons/compatible.json")"
