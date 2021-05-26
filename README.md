@@ -18,7 +18,7 @@ For the `Interface-*` fields, see https://github.com/Stanzilla/WoWUIBugs/issues/
 You'll need to set these environment variables containing API tokens:
 - `WOWI_API_TOKEN` - a [WoWInterface API token](https://www.wowinterface.com/downloads/filecpl.php?action=apitokens)
 
-You'll also need `curl`, `jq`, `sed` and `find` installed on your system.
+You'll also need `bash >= 4.0` `curl`, `jq`, `sed` and `find` installed on your system.
 
 Then run the script:
 ```bash
