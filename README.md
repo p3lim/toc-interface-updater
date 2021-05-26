@@ -16,7 +16,6 @@ For the `Interface-*` fields, see https://github.com/Stanzilla/WoWUIBugs/issues/
 ### Usage
 
 You'll need to set these environment variables containing API tokens:
-- `CF_API_KEY` - a [CurseForge API token](https://wow.curseforge.com/account/api-tokens)
 - `WOWI_API_TOKEN` - a [WoWInterface API token](https://www.wowinterface.com/downloads/filecpl.php?action=apitokens)
 
 You'll also need `curl`, `jq`, `sed` and `find` installed on your system.
@@ -72,6 +71,5 @@ jobs:
           branch: interface-version
           delete-branch: true
     env:
-      CF_API_KEY: ${{ secrets.CF_API_KEY }}
       WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
 ```
