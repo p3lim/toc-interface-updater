@@ -1,6 +1,6 @@
 # TOC Interface Updater
 
-This script will parse `*.toc` files (World of Warcraft AddOn metadata file) and update the `## Interface: ` line to the most recent version of the game according to the [WoWInterface API](https://www.wowinterface.com/forums/showthread.php?s=11c51a8909d2cf65c6d0a0afba2a5d75&t=51835).
+This script will parse World of Warcraft AddOn metadata files (TOC) and update the Interface version(s) to the most recent version(s) of the game according to the [WoWInterface API](https://www.wowinterface.com/forums/showthread.php?s=11c51a8909d2cf65c6d0a0afba2a5d75&t=51835).
 
 #### "Distinct" TOC files
 
