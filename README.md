@@ -1,6 +1,6 @@
 # TOC Interface Updater
 
-This script will parse World of Warcraft AddOn metadata files (TOC) and update the Interface version(s) to the most recent version(s) of the game according to the [WoWInterface API](https://www.wowinterface.com/forums/showthread.php?s=11c51a8909d2cf65c6d0a0afba2a5d75&t=51835).
+This script will parse [World of Warcraft AddOn metadata files (TOC)](https://wowpedia.fandom.com/wiki/TOC_format) and update the Interface version(s) to the most recent version(s) of the game according to the [WoWInterface API](https://www.wowinterface.com/forums/showthread.php?s=11c51a8909d2cf65c6d0a0afba2a5d75&t=51835).
 
 #### "Distinct" TOC files
 
@@ -8,8 +8,8 @@ This script supports updating the multiple TOC files the game supports, such as:
 
 - `MyAddon.toc` (default)
 - `MyAddon-Mainline.toc` (Retail, supported since build 38627)
-- `MyAddon-Classic.toc` (Classic, supported since build 38548)
-- `MyAddon-BCC.toc` (TBC Classic, supported since build 38631)
+- `MyAddon-Classic.toc` (Classic Era, supported since build 38548)
+- `MyAddon-BCC.toc` (Burning Crusade Classic, supported since build 38631)
 
 For more details see [this issue](https://github.com/Stanzilla/WoWUIBugs/issues/68#issuecomment-830351390).
 
@@ -26,8 +26,8 @@ This script supports updating the [multiple Interface types used in `release.sh`
 
 Which game version the default `## Interface:` line uses can be specified by passing one of the following strings as the only argument to the script:
 - `mainline` (Retail)
-- `classic` (Classic)
-- `bcc` (TBC Classic)
+- `classic` (Classic Era)
+- `bcc` (Burning Crusade Classic)
 
 ## Usage
 
