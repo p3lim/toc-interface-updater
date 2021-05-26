@@ -51,19 +51,49 @@ if [[ -z "${versions[bcc]}" ]]; then
 	exit 1
 fi
 
-# write to TOC files
-while read -r file; do
-	before="$(md5sum "$file")"
+# declare method to update interface version in TOC files
+function replace {
+	local file="$1"
+	local version="$2"
 
-	# replace the interface version value based on the defined fallback game version
-	sed -ri "s/^(## Interface:).*\$/\1 ${versions[$BASE_VERSION]}/" "$file"
+	# generate a hash of the file before we potentially modify it
+	local checksum="$(md5sum "$file")"
 
-	# replace game-specific interface version values used by the BigWigs/CurseForge packagers
-	sed -ri "s/^(## Interface-Retail:).*\$/\1 ${versions[retail]}/" "$file"
-	sed -ri "s/^(## Interface-Classic:).*\$/\1 ${versions[classic]}/" "$file"
-	sed -ri "s/^(## Interface-BCC:).*\$/\1 ${versions[bcc]}/" "$file"
+	if [[ -z "$version" ]]; then
+		echo "--- UPDATING $file"
+		# replace the interface version value based on the defined fallback game version
+		sed -ri "s/^(## Interface:).*\$/\1 ${versions[$BASE_VERSION]}/" "$file"
 
-	if [[ "$(md5sum "$file")" != "$before" ]]; then
+		# replace game-specific interface version values used by the BigWigs/CurseForge packagers
+		sed -ri "s/^(## Interface-Retail:).*\$/\1 ${versions[retail]}/" "$file"
+		sed -ri "s/^(## Interface-Classic:).*\$/\1 ${versions[classic]}/" "$file"
+		sed -ri "s/^(## Interface-BCC:).*\$/\1 ${versions[bcc]}/" "$file"
+	else
+		echo "--- FIXING $file"
+		# replace the interface version value
+		sed -ri "s/^(## Interface:).*\$/\1 ${versions[$version]}/" "$file"
+	fi
+
+	# output file status
+	if [[ "$(md5sum "$file")" != "$checksum" ]]; then
 		echo "Updated $file"
 	fi
-done < <(find . -name '*.toc')
+}
+
+# update generic TOC files
+while read -r file; do
+	replace "$file"
+done < <(find . -name '*.toc' ! -name '*-Mainline.toc' ! -name '*-Classic.toc' ! -name '*-BCC.toc')
+
+# update version-specific TOC files
+while read -r file; do
+	replace "$file" 'retail'
+done < <(find . -name '*-Mainline.toc')
+
+while read -r file; do
+	replace "$file" 'classic'
+done < <(find . -name '*-Classic.toc')
+
+while read -r file; do
+	replace "$file" 'bcc'
+done < <(find . -name '*-BCC.toc')
