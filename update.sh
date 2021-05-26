@@ -1,53 +1,28 @@
 #!/bin/bash
 
-[[ -z "$CF_API_KEY" ]] && {
-	echo "Missing CF_API_KEY"
-	exit 1
-}
-[[ -z "$WOWI_API_TOKEN" ]] && {
+if [[ -z "$WOWI_API_TOKEN" ]]; then
 	echo "Missing WOWI_API_TOKEN"
 	exit 1
-}
+fi
 
 # dictates which Interface version will be used by default
 BASE_VERSION="${1:-retail}"
 
-# query CurseForge for the latest game version (e.g. 9.0.5)
-gameVersions="$(curl -sSLH"X-API-Token: $CF_API_KEY" "https://wow.curseforge.com/api/game/versions")"
-if jq '.errorCode' <<< "$gameVersions" 2>/dev/null; then
-	# if this doesn't fail then we have an error
-	echo "Error: $(jq -r '.errorMessage' <<< "$gameVersions")"
-	exit 1
-elif [[ -z "$gameVersions" ]]; then
-	echo "Error: no data from CurseForge API"
-	exit 1
-fi
-
-# map game versions to variables
-retailVersion="$(jq -r 'map(select(.gameVersionTypeID == 517)) | max_by(.id) | .name' <<< "$gameVersions")"
-classicVersion="$(jq -r 'map(select(.gameVersionTypeID == 67408)) | max_by(.id) | .name' <<< "$gameVersions")"
-bccVersion="$(jq -r 'map(select(.gameVersionTypeID == 73246)) | max_by(.id) | .name' <<< "$gameVersions")"
-
-if [[ -z "$retailVersion" ]] || [[ -z "$classicVersion" ]] || [[ -z "$bccVersion" ]]; then
-	echo "Failed to get game version from CurseForge"
-	exit 1
-fi
-
 # query WoWInterface for Interface version (e.g. 90005)
-interfaceVersions="$(curl -sSLH"X-API-Token: $WOWI_API_TOKEN" "https://api.wowinterface.com/addons/compatible.json")"
-if jq '.ERROR' <<< "$interfaceVersions" 2>/dev/null; then
+data="$(curl -sSLH"X-API-Token: $WOWI_API_TOKEN" "https://api.wowinterface.com/addons/compatible.json")"
+if jq '.ERROR' <<< "$data" 2>/dev/null; then
 	# if this doesn't fail then we have an error
-	echo "Error: $(jq -r '.ERROR' <<< "$interfaceVersions")"
+	echo "Error: $(jq -r '.ERROR' <<< "$data")"
 	exit 1
-elif [[ -z "$interfaceVersions" ]]; then
+elif [[ -z "$data" ]]; then
 	echo "Error: no data from WoWInterface API"
 	exit 1
 fi
 
 # map interface version to variables based on game version
-retailInterfaceVersion="$(jq -r --arg v "$retailVersion" '.[] | select(.id == $v) | .interface' <<< "$interfaceVersions")"
-classicInterfaceVersion="$(jq -r --arg v "$classicVersion" '.[] | select(.id == $v) | .interface' <<< "$interfaceVersions")"
-bccInterfaceVersion="$(jq -r --arg v "$bccVersion" '.[] | select(.id == $v) | .interface' <<< "$interfaceVersions")"
+retailInterfaceVersion="$(jq -r --arg v 'Retail' '.[] | select(.game == $v) | .interface' <<< "$data")"
+classicInterfaceVersion="$(jq -r --arg v 'Classic' '.[] | select(.game == $v) | .interface' <<< "$data")"
+bccInterfaceVersion="$(jq -r --arg v 'TBC-Classic' '.[] | select(.game == $v) | .interface' <<< "$data")"
 
 if [[ -z "$retailInterfaceVersion" ]] || [[ -z "$classicInterfaceVersion" ]]; then
 	echo "Failed to get interface version from WoWInterface"
