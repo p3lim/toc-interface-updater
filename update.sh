@@ -64,7 +64,6 @@ function replace {
 	local checksum="$(md5sum "$file")"
 
 	if [[ -z "$version" ]]; then
-		echo "--- UPDATING $file"
 		# replace the interface version value based on the defined fallback game version
 		sed -ri "s/^(## Interface:).*\$/\1 ${versions[$BASE_VERSION]}/" "$file"
 
@@ -73,7 +72,6 @@ function replace {
 		sed -ri "s/^(## Interface-Classic:).*\$/\1 ${versions[classic]}/" "$file"
 		sed -ri "s/^(## Interface-BCC:).*\$/\1 ${versions[bcc]}/" "$file"
 	else
-		echo "--- FIXING $file"
 		# replace the interface version value
 		sed -ri "s/^(## Interface:).*\$/\1 ${versions[$version]}/" "$file"
 	fi
