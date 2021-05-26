@@ -7,14 +7,18 @@ fi
 
 # let the user decide which interface version to fall back on, used for
 # the BigWigs/CurseForge packager method of declaring the interface version
-BASE_VERSION="${1:-retail}"
+BASE_VERSION="${1:-mainline}"
 case "$BASE_VERSION" in
-	retail|classic|bcc)
+	retail)
+		# backwards compatibility
+		BASE_VERSION='mainline'
+		;;
+	mainline|classic|bcc)
 		# valid options
 		;;
 	*)
 		# invalid options
-		echo "Invalid base version '$BASE_VERSION', must be one of retail/classic/bcc."
+		echo "Invalid base version '$BASE_VERSION', must be one of mainline/classic/bcc."
 		exit 1
 		;;
 esac
@@ -33,12 +37,12 @@ fi
 
 # map interface versions
 declare -A versions
-versions[retail]="$(jq -r --arg v 'Retail' '.[] | select(.game == $v) | select(.default == true) | .interface' <<< "$data")"
+versions[mainline]="$(jq -r --arg v 'Retail' '.[] | select(.game == $v) | select(.default == true) | .interface' <<< "$data")"
 versions[classic]="$(jq -r --arg v 'Classic' '.[] | select(.game == $v) | .interface' <<< "$data")"
 versions[bcc]="$(jq -r --arg v 'TBC-Classic' '.[] | select(.game == $v) | .interface' <<< "$data")"
 
 # ensure we have interface versions
-if [[ -z "${versions[retail]}" ]]; then
+if [[ -z "${versions[mainline]}" ]]; then
 	echo "Failed to get retail interface version from WoWInterface API"
 	exit 1
 fi
@@ -65,7 +69,7 @@ function replace {
 		sed -ri "s/^(## Interface:).*\$/\1 ${versions[$BASE_VERSION]}/" "$file"
 
 		# replace game-specific interface version values used by the BigWigs/CurseForge packagers
-		sed -ri "s/^(## Interface-Retail:).*\$/\1 ${versions[retail]}/" "$file"
+		sed -ri "s/^(## Interface-Retail:).*\$/\1 ${versions[mainline]}/" "$file"
 		sed -ri "s/^(## Interface-Classic:).*\$/\1 ${versions[classic]}/" "$file"
 		sed -ri "s/^(## Interface-BCC:).*\$/\1 ${versions[bcc]}/" "$file"
 	else
@@ -87,7 +91,7 @@ done < <(find . -name '*.toc' ! -name '*-Mainline.toc' ! -name '*-Classic.toc' !
 
 # update version-specific TOC files
 while read -r file; do
-	replace "$file" 'retail'
+	replace "$file" 'mainline'
 done < <(find . -name '*-Mainline.toc')
 
 while read -r file; do

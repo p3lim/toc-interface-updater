@@ -32,8 +32,8 @@ bash update.sh
 You can use this in a GitHub action workflow by referencing `p3lim/toc-interface-updater@v1`.
 
 Options:
-- `base` - dictates which version `## Interface:` will be set to, one of "retail", "classic" or "bcc"
-  - _optional, defaults to "retail"_
+- `base` - dictates which version `## Interface:` will be set to, one of "mainline", "classic" or "bcc"
+  - _optional, defaults to "mainline"_
 
 #### Example
 
@@ -61,7 +61,7 @@ jobs:
       - name: Update TOC Interface version
         uses: p3lim/toc-interface-updater@v1
         with:
-          base: retail # this is default
+          base: mainline # this is default
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
