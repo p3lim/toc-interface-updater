@@ -86,12 +86,12 @@ function replace {
 # update TOC files
 while read -r file; do
 	if ! [[ "$file" =~ [_-](Mainline|Classic|Vanilla|BCC|TBC).toc$ ]]; then
-		echo "$file"
+		replace "$file"
 	elif [[ "$file" =~ [_-]Mainline.toc$ ]]; then
-		echo "$file mainline"
+		replace "$file" 'mainline'
 	elif [[ "$file" =~ [_-](Classic|Vanilla).toc$ ]]; then
-		echo "$file classic"
+		replace "$file" 'classic'
 	elif [[ "$file" =~ [_-](BCC|TBC).toc$ ]]; then
-		echo "$file bcc"
+		replace "$file" 'bcc'
 	fi
 done < <(find -- *.toc)
