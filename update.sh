@@ -94,4 +94,4 @@ while read -r file; do
 	elif [[ "$file" =~ [_-](BCC|TBC).toc$ ]]; then
 		echo "$file bcc"
 	fi
-done < <(find *.toc)
+done < <(find -- *.toc)
