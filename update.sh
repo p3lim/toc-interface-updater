@@ -61,7 +61,8 @@ function replace {
 	local version="$2"
 
 	# generate a hash of the file before we potentially modify it
-	local checksum="$(md5sum "$file")"
+	local checksum
+	checksum="$(md5sum "$file")"
 
 	if [[ -z "$version" ]]; then
 		# replace the interface version value based on the defined fallback game version
