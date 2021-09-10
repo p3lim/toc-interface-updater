@@ -82,20 +82,15 @@ function replace {
 	fi
 }
 
-# update generic TOC files
+# update TOC files
 while read -r file; do
-	replace "$file"
-done < <(find . -name '*.toc' ! -name '*-Mainline.toc' ! -name '*-Classic.toc' ! -name '*-BCC.toc')
-
-# update version-specific TOC files
-while read -r file; do
-	replace "$file" 'mainline'
-done < <(find . -name '*-Mainline.toc')
-
-while read -r file; do
-	replace "$file" 'classic'
-done < <(find . -name '*-Classic.toc')
-
-while read -r file; do
-	replace "$file" 'bcc'
-done < <(find . -name '*-BCC.toc')
+	if ! [[ "$file" =~ [_-](Mainline|Classic|Vanilla|BCC|TBC).toc$ ]]; then
+		echo "$file"
+	elif [[ "$file" =~ [_-]Mainline.toc$ ]]; then
+		echo "$file mainline"
+	elif [[ "$file" =~ [_-](Classic|Vanilla).toc$ ]]; then
+		echo "$file classic"
+	elif [[ "$file" =~ [_-](BCC|TBC).toc$ ]]; then
+		echo "$file bcc"
+	fi
+done < <(find *.toc)
