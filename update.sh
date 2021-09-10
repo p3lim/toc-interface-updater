@@ -16,9 +16,17 @@ case "$BASE_VERSION" in
 	mainline|classic|bcc)
 		# valid options
 		;;
+	vanilla)
+		# for convenience
+		BASE_VERSION='classic'
+		;;
+	tbc)
+		# for convenience
+		BASE_VERSION='bcc'
+		;;
 	*)
 		# invalid options
-		echo "Invalid base version '$BASE_VERSION', must be one of mainline/classic/bcc."
+		echo "Invalid base version '$BASE_VERSION', must be one of mainline/classic/vanilla/bcc/tbc."
 		exit 1
 		;;
 esac

@@ -34,7 +34,9 @@ This script supports updating the [multiple Interface types used in `release.sh`
 Which game version the default `## Interface:` line uses can be specified by passing one of the following strings as the only argument to the script:
 - `mainline` (Retail)
 - `classic` (Classic Era)
+- `vanilla` (alias for `classic`)
 - `bcc` (Burning Crusade Classic)
+- `tbc` (alias for `bcc`)
 
 ## Usage
 
