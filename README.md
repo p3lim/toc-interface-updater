@@ -7,11 +7,18 @@ This script will parse [World of Warcraft AddOn metadata files (TOC)](https://wo
 This script supports updating the multiple TOC files the game supports, such as:
 
 - `MyAddon.toc` (default)
-- `MyAddon-Mainline.toc` (Retail, supported since build 38627)
-- `MyAddon-Classic.toc` (Classic Era, supported since build 38548)
-- `MyAddon-BCC.toc` (Burning Crusade Classic, supported since build 38631)
+- `MyAddon-Mainline.toc` (Retail)
+- `MyAddon_Mainline.toc` (Retail)
+- `MyAddon-Classic.toc` (Classic Era)
+- `MyAddon_Classic.toc` (Classic Era)
+- `MyAddon-Vanilla.toc` (Classic Era)
+- `MyAddon_Vanilla.toc` (Classic Era)
+- `MyAddon-BCC.toc` (Burning Crusade Classic)
+- `MyAddon_BCC.toc` (Burning Crusade Classic)
+- `MyAddon-TBC.toc` (Burning Crusade Classic)
+- `MyAddon_TBC.toc` (Burning Crusade Classic)
 
-For more details see [this issue](https://github.com/Stanzilla/WoWUIBugs/issues/68#issuecomment-830351390).
+For more details see [this](https://github.com/Stanzilla/WoWUIBugs/issues/68#issuecomment-830351390) and [this](https://github.com/Stanzilla/WoWUIBugs/issues/68#issuecomment-889431675).
 
 #### Multiple Interface types
 
@@ -34,7 +41,8 @@ Which game version the default `## Interface:` line uses can be specified by pas
 You'll need to set these environment variables containing API tokens:
 - `WOWI_API_TOKEN` - a [WoWInterface API token](https://www.wowinterface.com/downloads/filecpl.php?action=apitokens)
 
-You'll also need `bash >= 4.0` `curl`, `jq`, `sed`, `find` and `md5sum` installed on your system.
+You'll also need `bash >= 4.0` `curl`, `jq`, `sed`, `find` and `md5sum` installed on your system.  
+Only GNU versions are officially supported, Busybox alternatives (or others) have not been tested.
 
 Then run the script:
 ```bash
