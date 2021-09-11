@@ -40,9 +40,6 @@ Which game version the default `## Interface:` line uses can be specified by pas
 
 ## Usage
 
-You'll need to set these environment variables containing API tokens:
-- `WOWI_API_TOKEN` - a [WoWInterface API token](https://www.wowinterface.com/downloads/filecpl.php?action=apitokens)
-
 You'll also need `bash >= 4.0` `curl`, `jq`, `sed`, `find` and `md5sum` installed on your system.  
 Only GNU versions are officially supported, Busybox alternatives (or others) have not been tested.
 
@@ -58,8 +55,12 @@ bash update.sh classic # set Classic as the default Interface version
 You can use this in a GitHub action workflow by referencing `p3lim/toc-interface-updater@v2`.
 
 Options:
-- `base` - dictates which version `## Interface:` will be set to, one of "mainline", "classic" or "bcc"
-  - _optional, defaults to "mainline"_
+- `base` - sets the fallback game version for unsuffixed TOC files, one of:
+  - `mainline` (this is the default)
+  - `classic`
+  - `vanilla` (alias for `classic`)
+  - `bcc`
+  - `tbc` (alias for `tbc`)
 
 #### Example
 
@@ -96,6 +97,4 @@ jobs:
           commit-message: Update Interface version
           branch: interface-version
           delete-branch: true
-    env:
-      WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
 ```
