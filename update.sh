@@ -1,10 +1,5 @@
 #!/bin/bash
 
-if [[ -z "$WOWI_API_TOKEN" ]]; then
-	echo "Missing WOWI_API_TOKEN"
-	exit 1
-fi
-
 # let the user decide which interface version to fall back on, used for
 # the BigWigs/CurseForge packager method of declaring the interface version
 BASE_VERSION="${1:-mainline}"
@@ -32,14 +27,14 @@ case "$BASE_VERSION" in
 esac
 
 # query WoWInterface API for interface versions
-data="$(curl -sSLH"X-API-Token: $WOWI_API_TOKEN" "https://api.wowinterface.com/addons/compatible.json")"
+data="$(curl -sSL "https://api.wowinterface.com/addons/compatible.json")"
 if jq '.ERROR' <<< "$data" 2>/dev/null; then
 	# error from the API
-	echo "Error: $(jq -r '.ERROR' <<< "$data")"
+	echo "Error from WoWInterface API: $(jq -r '.ERROR' <<< "$data")"
 	exit 1
 elif [[ -z "$data" ]]; then
 	# error from the query
-	echo "Error: no data from WoWInterface API"
+	echo "Failed to get data from WoWInterface API"
 	exit 1
 fi
 
