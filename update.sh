@@ -40,7 +40,7 @@ fi
 
 # map interface versions
 declare -A versions
-versions[mainline]="$(jq -r --arg v 'Retail' '[.[] | select(.game == $v) | select(.default == true)][0] | .interface' <<< "$data")"
+versions[mainline]="$(jq -r --arg v 'Retail' '[.[] | select(.game == $v)][0] | .interface' <<< "$data")"
 versions[classic]="$(jq -r --arg v 'Classic' '[.[] | select(.game == $v)][0] | .interface' <<< "$data")"
 versions[bcc]="$(jq -r --arg v 'TBC-Classic' '[.[] | select(.game == $v)][0] | .interface' <<< "$data")"
 
