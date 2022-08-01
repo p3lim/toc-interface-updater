@@ -17,6 +17,10 @@ This script supports updating the multiple TOC files the game supports, such as:
 - `MyAddon_BCC.toc` (Burning Crusade Classic)
 - `MyAddon-TBC.toc` (Burning Crusade Classic)
 - `MyAddon_TBC.toc` (Burning Crusade Classic)
+- `MyAddon-Wrath.toc` (Wrath of the Lich King Classic)
+- `MyAddon_Wrath.toc` (Wrath of the Lich King Classic)
+- `MyAddon-WOTLKC.toc` (Wrath of the Lich King Classic)
+- `MyAddon_WOTLKC.toc` (Wrath of the Lich King Classic)
 
 For more details see [this](https://github.com/Stanzilla/WoWUIBugs/issues/68#issuecomment-830351390) and [this](https://github.com/Stanzilla/WoWUIBugs/issues/68#issuecomment-889431675).
 
@@ -29,6 +33,7 @@ This script supports updating the [multiple Interface types used in `release.sh`
 ## Interface-Retail: NNNNN
 ## Interface-Classic: NNNNN
 ## Interface-BCC: NNNNN
+## Interface-Wrath: NNNNN
 ```
 
 Which game version the default `## Interface:` line uses can be specified by passing one of the following strings as the only argument to the script:
@@ -37,6 +42,8 @@ Which game version the default `## Interface:` line uses can be specified by pas
 - `vanilla` (alias for `classic`)
 - `bcc` (Burning Crusade Classic)
 - `tbc` (alias for `bcc`)
+- `wrath` (Wrath of the Lich King Classic)
+- `wotlkc` (Alias for `wrath`)
 
 ## Usage
 
@@ -61,6 +68,8 @@ Options:
   - `vanilla` (alias for `classic`)
   - `bcc`
   - `tbc` (alias for `tbc`)
+  - `wrath`
+  - `wotlkc` (alias for `wrath`)
 
 #### Example
 
