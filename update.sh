@@ -8,7 +8,7 @@ case "$BASE_VERSION" in
 		# backwards compatibility
 		BASE_VERSION='mainline'
 		;;
-	mainline|classic|bcc)
+	mainline|classic|bcc|wrath)
 		# valid options
 		;;
 	vanilla)
@@ -19,9 +19,13 @@ case "$BASE_VERSION" in
 		# for convenience
 		BASE_VERSION='bcc'
 		;;
+	wotlkc)
+		# for convenience
+		BASE_VERSION='wrath'
+		;;
 	*)
 		# invalid options
-		echo "Invalid base version '$BASE_VERSION', must be one of mainline/classic/vanilla/bcc/tbc."
+		echo "Invalid base version '$BASE_VERSION', must be one of mainline/classic/vanilla/bcc/tbc/wrath/wotlkc."
 		exit 1
 		;;
 esac
@@ -43,6 +47,7 @@ declare -A versions
 versions[mainline]="$(jq -r --arg v 'Retail' '[.[] | select(.game == $v)][0] | .interface' <<< "$data")"
 versions[classic]="$(jq -r --arg v 'Classic' '[.[] | select(.game == $v)][0] | .interface' <<< "$data")"
 versions[bcc]="$(jq -r --arg v 'TBC-Classic' '[.[] | select(.game == $v)][0] | .interface' <<< "$data")"
+versions[wrath]="$(jq -r --arg v 'WOTLK-Classic' '[.[] | select(.game == $v)][0] | .interface' <<< "$data")"
 
 # ensure we have interface versions
 if [[ -z "${versions[mainline]}" ]]; then
@@ -55,6 +60,10 @@ if [[ -z "${versions[classic]}" ]]; then
 fi
 if [[ -z "${versions[bcc]}" ]]; then
 	echo "Failed to get tbc-classic interface version from WoWInterface API"
+	exit 1
+fi
+if [[ -z "${versions[wrath]}" ]]; then
+	echo "Failed to get wotlk-classic interface version from WoWInterface API"
 	exit 1
 fi
 
@@ -75,6 +84,7 @@ function replace {
 		sed -ri "s/^(## Interface-Retail:).*\$/\1 ${versions[mainline]}/" "$file"
 		sed -ri "s/^(## Interface-Classic:).*\$/\1 ${versions[classic]}/" "$file"
 		sed -ri "s/^(## Interface-BCC:).*\$/\1 ${versions[bcc]}/" "$file"
+		sed -ri "s/^(## Interface-Wrath:).*\$/\1 ${versions[wrath]}/" "$file"
 	else
 		# replace the interface version value
 		sed -ri "s/^(## Interface:).*\$/\1 ${versions[$version]}/" "$file"
@@ -88,7 +98,7 @@ function replace {
 
 # update TOC files
 while read -r file; do
-	if ! [[ "$file" =~ [_-](Mainline|Classic|Vanilla|BCC|TBC).toc$ ]]; then
+	if ! [[ "$file" =~ [_-](Mainline|Classic|Vanilla|BCC|TBC|Wrath|WOTLKC).toc$ ]]; then
 		replace "$file"
 	elif [[ "$file" =~ [_-]Mainline.toc$ ]]; then
 		replace "$file" 'mainline'
@@ -96,5 +106,7 @@ while read -r file; do
 		replace "$file" 'classic'
 	elif [[ "$file" =~ [_-](BCC|TBC).toc$ ]]; then
 		replace "$file" 'bcc'
+	elif [[ "$file" =~ [_-](Wrath|WOTLKC).toc$ ]]; then
+		replace "$file" 'wrath'
 	fi
 done < <(find -- *.toc)
