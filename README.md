@@ -2,31 +2,32 @@
 
 This script will parse [World of Warcraft AddOn metadata files (TOC)](https://wowpedia.fandom.com/wiki/TOC_format) and update the Interface version(s) to the most recent version(s) of the game according to the [WoWInterface API](https://www.wowinterface.com/forums/showthread.php?s=11c51a8909d2cf65c6d0a0afba2a5d75&t=51835).
 
-#### "Distinct" TOC files
+#### Multiple client flavours
 
-This script supports updating the multiple TOC files the game supports, such as:
+This script supports updating the [multiple TOC files](https://wowpedia.fandom.com/wiki/TOC_format#Multiple_client_flavors) the game officially supports, such as:
 
 - `MyAddon.toc` (default)
-- `MyAddon-Mainline.toc` (Retail)
 - `MyAddon_Mainline.toc` (Retail)
-- `MyAddon-Classic.toc` (Classic Era)
-- `MyAddon_Classic.toc` (Classic Era)
-- `MyAddon-Vanilla.toc` (Classic Era)
 - `MyAddon_Vanilla.toc` (Classic Era)
-- `MyAddon-BCC.toc` (Burning Crusade Classic)
-- `MyAddon_BCC.toc` (Burning Crusade Classic)
-- `MyAddon-TBC.toc` (Burning Crusade Classic)
 - `MyAddon_TBC.toc` (Burning Crusade Classic)
-- `MyAddon-Wrath.toc` (Wrath of the Lich King Classic)
 - `MyAddon_Wrath.toc` (Wrath of the Lich King Classic)
-- `MyAddon-WOTLKC.toc` (Wrath of the Lich King Classic)
+
+It also supports legacy alternatives, although you should avoid using these:
+
+- `MyAddon-Mainline.toc` (Retail)
+- `MyAddon-Vanilla.toc` (Classic Era)
+- `MyAddon_Classic.toc` (Classic Era)
+- `MyAddon-Classic.toc` (Classic Era)
+- `MyAddon-TBC.toc` (Burning Crusade Classic)
+- `MyAddon_BCC.toc` (Burning Crusade Classic)
+- `MyAddon-BCC.toc` (Burning Crusade Classic)
+- `MyAddon-Wrath.toc` (Wrath of the Lich King Classic)
 - `MyAddon_WOTLKC.toc` (Wrath of the Lich King Classic)
+- `MyAddon-WOTLKC.toc` (Wrath of the Lich King Classic)
 
-For more details see [this](https://github.com/Stanzilla/WoWUIBugs/issues/68#issuecomment-830351390) and [this](https://github.com/Stanzilla/WoWUIBugs/issues/68#issuecomment-889431675).
+#### Multiple Interface versions
 
-#### Multiple Interface types
-
-This script supports updating the [multiple Interface types used in `release.sh`](https://github.com/BigWigsMods/packager#building-for-multiple-game-versions), such as:
+This script supports updating the [multiple Interface types used in BigWigs' packager](https://github.com/BigWigsMods/packager#single-toc-file), such as:
 
 ```
 ## Interface: NNNNN
@@ -36,14 +37,21 @@ This script supports updating the [multiple Interface types used in `release.sh`
 ## Interface-Wrath: NNNNN
 ```
 
-Which game version the default `## Interface:` line uses can be specified by passing one of the following strings as the only argument to the script:
+This is a deprecated feature, [multiple client flavours](#multiple-client-flavours) should be used instead.
+
+#### Base version
+
+The interface version used for the default `MyAddon.toc` (and `## Interface: ` in case of [multiple interface version](#multiple-interface-versions)).
+
 - `mainline` (Retail)
-- `classic` (Classic Era)
-- `vanilla` (alias for `classic`)
-- `bcc` (Burning Crusade Classic)
-- `tbc` (alias for `bcc`)
+- `vanilla` (Classic Era)
+- `classic` (alias for `vanilla`)
+- `tbc` (Burning Crusade Classic)
+- `bcc` (alias for `tbc`)
 - `wrath` (Wrath of the Lich King Classic)
-- `wotlkc` (Alias for `wrath`)
+- `wotlkc` (alias for `wrath`)
+
+It is recommended to use `mainline` as the default base version, as CurseForge will not accept the zip file otherwise, and is why the script defaults to `mainline` as the base version unless specified.
 
 ## Usage
 
@@ -53,23 +61,18 @@ Only GNU versions are officially supported, Busybox alternatives (or others) hav
 Then run the script:
 ```bash
 export WOWI_API_TOKEN=...
-bash update.sh
+bash update.sh         # use the default base version
 bash update.sh classic # set Classic as the default Interface version
 ```
+
+The only argument the script takes is the [base version](#base-version).
 
 ## GitHub Action
 
 You can use this in a GitHub action workflow by referencing `p3lim/toc-interface-updater@v2`.
 
 Options:
-- `base` - sets the fallback game version for unsuffixed TOC files, one of:
-  - `mainline` (this is the default)
-  - `classic`
-  - `vanilla` (alias for `classic`)
-  - `bcc`
-  - `tbc` (alias for `bcc`)
-  - `wrath`
-  - `wotlkc` (alias for `wrath`)
+- `base` - sets the fallback game version for unsuffixed TOC files, see [base version](#base-version) for valid options
 
 #### Example
 
