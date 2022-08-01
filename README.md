@@ -67,7 +67,7 @@ Options:
   - `classic`
   - `vanilla` (alias for `classic`)
   - `bcc`
-  - `tbc` (alias for `tbc`)
+  - `tbc` (alias for `bcc`)
   - `wrath`
   - `wotlkc` (alias for `wrath`)
 
