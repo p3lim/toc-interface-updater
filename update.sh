@@ -42,12 +42,15 @@ elif [[ -z "$data" ]]; then
 	exit 1
 fi
 
+# lowercase entire dataset
+data="$(tr A-Z a-z <<< "$data")"
+
 # map interface versions
 declare -A versions
-versions[mainline]="$(jq -r --arg v 'Retail' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
-versions[classic]="$(jq -r --arg v 'Classic' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
-versions[bcc]="$(jq -r --arg v 'TBC-Classic' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
-versions[wrath]="$(jq -r --arg v 'WOTLK-Classic' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
+versions[mainline]="$(jq -r --arg v 'retail' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
+versions[classic]="$(jq -r --arg v 'classic' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
+versions[bcc]="$(jq -r --arg v 'tbc-classic' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
+versions[wrath]="$(jq -r --arg v 'wotlk-classic' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
 
 # ensure we have interface versions
 if [[ -z "${versions[mainline]}" ]]; then
