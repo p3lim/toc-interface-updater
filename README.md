@@ -60,7 +60,6 @@ Only GNU versions are officially supported, Busybox alternatives (or others) hav
 
 Then run the script:
 ```bash
-export WOWI_API_TOKEN=...
 bash update.sh         # use the default base version
 bash update.sh classic # set Classic as the default Interface version
 ```
