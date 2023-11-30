@@ -42,7 +42,7 @@ The only argument the script takes is the [flavor](#flavor).
 
 ## GitHub Action
 
-You can use this in a GitHub action workflow by referencing `p3lim/toc-interface-updater@v2`.
+You can use this in a GitHub action workflow by referencing `p3lim/toc-interface-updater@v3`.
 
 Options:
 - `flavor` - sets the fallback game version for unsuffixed TOC files, see [flavor](#flavor) for valid options
@@ -71,12 +71,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Update TOC Interface version
-        uses: p3lim/toc-interface-updater@v2
+        uses: p3lim/toc-interface-updater@v3
         with:
-          base: retail # this is default
+          flavor: retail # this is the default
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v5
         with:
           title: Update Interface version
           commit-message: Update Interface version
