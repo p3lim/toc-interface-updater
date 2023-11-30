@@ -1,22 +1,16 @@
 #!/bin/bash
 
-# let the user decide which interface version to fall back on
 FLAVOR="${1:-retail}"
+PRODUCT=
 case "$FLAVOR" in
-	retail|classic_era|classic)
-		# valid options
+	retail|mainline)
+		PRODUCT='wow'
 		;;
-	mainline)
-		# backwards compatibility
-		FLAVOR='retail'
+	classic_era|vanilla)
+		PRODUCT='wow_classic_era'
 		;;
-	vanilla)
-		# for convenience
-		FLAVOR='classic_era'
-		;;
-	wrath|wotlkc)
-		# for convenience
-		FLAVOR='classic'
+	classic|wrath|wotlk)
+		PRODUCT='wow_classic'
 		;;
 	*)
 		echo "Invalid flavor '$FLAVOR', must be one of retail/mainline, classic_era/vanilla, classic/wrath/wotlkc."
@@ -24,24 +18,10 @@ case "$FLAVOR" in
 		;;
 esac
 
-PRODUCT=
-case "$FLAVOR" in
-	retail)
-		PRODUCT='wow'
-		;;
-	classic_era)
-		PRODUCT='wow_classic_era'
-		;;
-	classic)
-		PRODUCT='wow_classic'
-		;;
-esac
-
 # define function to update interface version in TOC files
 function replace {
 	local file="$1"
-	local flavor="${2:-$FLAVOR}"
-	local product="${3:-$PRODUCT}"
+	local product="${2:-$PRODUCT}"
 
 	# generate a hash of the file before we potentially modify it
 	local checksum
@@ -76,10 +56,10 @@ while read -r file; do
 	if ! [[ "$file" =~ [_-](Mainline|Classic|Vanilla|Wrath|WOTLKC).toc$ ]]; then
 		replace "$file"
 	elif [[ "$file" =~ [_-]Mainline.toc$ ]]; then
-		replace "$file" 'retail' 'wow'
+		replace "$file" 'wow'
 	elif [[ "$file" =~ [_-](Classic|Vanilla).toc$ ]]; then
-		replace "$file" 'classic_era' 'wow_classic_era'
+		replace "$file" 'wow_classic_era'
 	elif [[ "$file" =~ [_-](Wrath|WOTLKC).toc$ ]]; then
-		replace "$file" 'classic' 'wow_classic'
+		replace "$file" 'wow_classic'
 	fi
 done < <(find -- *.toc)
