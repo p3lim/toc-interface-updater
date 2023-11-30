@@ -1,6 +1,6 @@
 # TOC Interface Updater
 
-This script will parse [World of Warcraft AddOn metadata files (TOC)](https://warcraft.wiki.gg/wiki/TOC_format) and update the Interface version(s) to the most recent version(s) of the game according to the [WoWInterface API](https://www.wowinterface.com/forums/showthread.php?s=11c51a8909d2cf65c6d0a0afba2a5d75&t=51835).
+This script will parse [World of Warcraft AddOn metadata files (TOC)](https://warcraft.wiki.gg/wiki/TOC_format) and update the Interface version(s) to the most recent version(s) of the game.
 
 #### Multiple client flavours
 
@@ -29,7 +29,7 @@ The script will default to `retail` unless specified.
 
 ## Usage
 
-You'll also need `bash >= 4.0` `curl`, `jq`, `sed`, `find` and `md5sum` installed on your system.  
+You'll need `bash >= 4.0`, `md5sum`, `nc`, `awk`, `sed`, `tr` and `find` installed on your system.  
 Only GNU versions are officially supported, Busybox alternatives (or others) have not been tested.
 
 Then run the script:
