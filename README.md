@@ -13,17 +13,19 @@ This script supports updating the [multiple TOC files](https://wowpedia.fandom.c
 
 It also supports legacy alternatives, although you should avoid using those.
 
-#### Base version
+#### Flavor
 
 The interface version used for the default `MyAddon.toc` is defined by passing the flavor to the script, which can be any of the following:
 
-- `mainline` (Retail)
-- `vanilla` (Classic Era)
-- `classic` (alias for `vanilla`)
-- `wrath` (Wrath of the Lich King Classic)
-- `wotlkc` (alias for `wrath`)
+- `retail` (Retail)
+  - `mainline` (alias for `retail`)
+- `classic_era` (Classic Era)
+  - `vanilla` (alias for `classic_era`)
+- `classic` (Wrath of the Lich King Classic)
+  - `wrath` (alias for `classic`)
+  - `wotlkc` (alias for `classic`)
 
-It is recommended to use `mainline` as the default base version, as CurseForge will not accept the zip file otherwise, and is why the script defaults to `mainline` as the base version unless specified.
+The script will default to `retail` unless specified.
 
 ## Usage
 
@@ -32,18 +34,18 @@ Only GNU versions are officially supported, Busybox alternatives (or others) hav
 
 Then run the script:
 ```bash
-bash update.sh         # use the default base version
+bash update.sh         # use the default flavor
 bash update.sh classic # set Classic as the default Interface version
 ```
 
-The only argument the script takes is the [base version](#base-version).
+The only argument the script takes is the [flavor](#flavor).
 
 ## GitHub Action
 
 You can use this in a GitHub action workflow by referencing `p3lim/toc-interface-updater@v2`.
 
 Options:
-- `base` - sets the fallback game version for unsuffixed TOC files, see [base version](#base-version) for valid options
+- `flavor` - sets the fallback game version for unsuffixed TOC files, see [flavor](#flavor) for valid options
 
 #### Example
 
@@ -71,7 +73,7 @@ jobs:
       - name: Update TOC Interface version
         uses: p3lim/toc-interface-updater@v2
         with:
-          base: mainline # this is default
+          base: retail # this is default
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3

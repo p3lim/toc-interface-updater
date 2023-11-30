@@ -4,11 +4,11 @@ branding:
   icon: tag
   color: yellow
 inputs:
-  base:
-    description: Interface version to default to (retail|classic|bcc)
+  flavor:
+    description: Interface version to default to
     default: retail
 runs:
   using: composite
   steps:
-    - run: bash ${{ github.action_path }}/update.sh "${{ inputs.base }}"
+    - run: bash ${{ github.action_path }}/update.sh "${{ inputs.flavor }}"
       shell: bash

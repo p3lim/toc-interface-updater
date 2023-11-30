@@ -1,27 +1,25 @@
 #!/bin/bash
 
-# let the user decide which interface version to fall back on, used for
-# the BigWigs/CurseForge packager method of declaring the interface version
-BASE_VERSION="${1:-mainline}"
-case "$BASE_VERSION" in
-	retail)
-		# backwards compatibility
-		BASE_VERSION='mainline'
-		;;
-	mainline|classic|wrath)
+# let the user decide which interface version to fall back on
+FLAVOR="${1:-retail}"
+case "$FLAVOR" in
+	retail|classic_era|classic)
 		# valid options
+		;;
+	mainline)
+		# backwards compatibility
+		FLAVOR='retail'
 		;;
 	vanilla)
 		# for convenience
-		BASE_VERSION='classic'
+		FLAVOR='classic_era'
 		;;
-	wotlkc)
+	wrath|wotlkc)
 		# for convenience
-		BASE_VERSION='wrath'
+		FLAVOR='classic'
 		;;
 	*)
-		# invalid options
-		echo "Invalid base version '$BASE_VERSION', must be one of mainline/classic/vanilla/bcc/tbc/wrath/wotlkc."
+		echo "Invalid flavor '$FLAVOR', must be one of retail/mainline, classic_era/vanilla, classic/wrath/wotlkc."
 		exit 1
 		;;
 esac
@@ -43,21 +41,21 @@ data="$(tr A-Z a-z <<< "$data")"
 
 # map interface versions
 declare -A versions
-versions[mainline]="$(jq -r --arg v 'retail' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
-versions[classic]="$(jq -r --arg v 'classic' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
-versions[wrath]="$(jq -r --arg v 'wotlk-classic' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
+versions[retail]="$(jq -r --arg v 'retail' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
+versions[classic_era]="$(jq -r --arg v 'classic' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
+versions[classic]="$(jq -r --arg v 'wotlk-classic' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
 
 # ensure we have interface versions
-if [[ -z "${versions[mainline]}" ]]; then
+if [[ -z "${versions[retail]}" ]]; then
 	echo "Failed to get retail interface version from WoWInterface API"
+	exit 1
+fi
+if [[ -z "${versions[classic_era]}" ]]; then
+	echo "Failed to get classic era interface version from WoWInterface API"
 	exit 1
 fi
 if [[ -z "${versions[classic]}" ]]; then
 	echo "Failed to get classic interface version from WoWInterface API"
-	exit 1
-fi
-if [[ -z "${versions[wrath]}" ]]; then
-	echo "Failed to get wotlk-classic interface version from WoWInterface API"
 	exit 1
 fi
 
@@ -72,7 +70,7 @@ function replace {
 
 	if [[ -z "$version" ]]; then
 		# replace the interface version value based on the defined fallback game version
-		sed -ri "s/^(## Interface:).*\$/\1 ${versions[$BASE_VERSION]}/" "$file"
+		sed -ri "s/^(## Interface:).*\$/\1 ${versions[$FLAVOR]}/" "$file"
 	else
 		# replace the interface version value
 		sed -ri "s/^(## Interface:).*\$/\1 ${versions[$version]}/" "$file"
@@ -89,10 +87,10 @@ while read -r file; do
 	if ! [[ "$file" =~ [_-](Mainline|Classic|Vanilla|Wrath|WOTLKC).toc$ ]]; then
 		replace "$file"
 	elif [[ "$file" =~ [_-]Mainline.toc$ ]]; then
-		replace "$file" 'mainline'
+		replace "$file" 'retail'
 	elif [[ "$file" =~ [_-](Classic|Vanilla).toc$ ]]; then
-		replace "$file" 'classic'
+		replace "$file" 'classic_era'
 	elif [[ "$file" =~ [_-](Wrath|WOTLKC).toc$ ]]; then
-		replace "$file" 'wrath'
+		replace "$file" 'classic'
 	fi
 done < <(find -- *.toc)
