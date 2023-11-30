@@ -1,3 +1,0 @@
-## Interface: 20000
-
-file.lua

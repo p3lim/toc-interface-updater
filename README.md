@@ -9,7 +9,6 @@ This script supports updating the [multiple TOC files](https://wowpedia.fandom.c
 - `MyAddon.toc` (default)
 - `MyAddon_Mainline.toc` (Retail)
 - `MyAddon_Vanilla.toc` (Classic Era)
-- `MyAddon_TBC.toc` (Burning Crusade Classic)
 - `MyAddon_Wrath.toc` (Wrath of the Lich King Classic)
 
 It also supports legacy alternatives, although you should avoid using those.
@@ -21,8 +20,6 @@ The interface version used for the default `MyAddon.toc` is defined by passing t
 - `mainline` (Retail)
 - `vanilla` (Classic Era)
 - `classic` (alias for `vanilla`)
-- `tbc` (Burning Crusade Classic)
-- `bcc` (alias for `tbc`)
 - `wrath` (Wrath of the Lich King Classic)
 - `wotlkc` (alias for `wrath`)
 

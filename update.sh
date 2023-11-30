@@ -8,16 +8,12 @@ case "$BASE_VERSION" in
 		# backwards compatibility
 		BASE_VERSION='mainline'
 		;;
-	mainline|classic|bcc|wrath)
+	mainline|classic|wrath)
 		# valid options
 		;;
 	vanilla)
 		# for convenience
 		BASE_VERSION='classic'
-		;;
-	tbc)
-		# for convenience
-		BASE_VERSION='bcc'
 		;;
 	wotlkc)
 		# for convenience
@@ -49,7 +45,6 @@ data="$(tr A-Z a-z <<< "$data")"
 declare -A versions
 versions[mainline]="$(jq -r --arg v 'retail' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
 versions[classic]="$(jq -r --arg v 'classic' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
-versions[bcc]="$(jq -r --arg v 'tbc-classic' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
 versions[wrath]="$(jq -r --arg v 'wotlk-classic' '.[] | select(.game == $v) | .interface' <<< "$data" | sort -n -r | head -n1)"
 
 # ensure we have interface versions
@@ -59,10 +54,6 @@ if [[ -z "${versions[mainline]}" ]]; then
 fi
 if [[ -z "${versions[classic]}" ]]; then
 	echo "Failed to get classic interface version from WoWInterface API"
-	exit 1
-fi
-if [[ -z "${versions[bcc]}" ]]; then
-	echo "Failed to get tbc-classic interface version from WoWInterface API"
 	exit 1
 fi
 if [[ -z "${versions[wrath]}" ]]; then
@@ -95,14 +86,12 @@ function replace {
 
 # update TOC files
 while read -r file; do
-	if ! [[ "$file" =~ [_-](Mainline|Classic|Vanilla|BCC|TBC|Wrath|WOTLKC).toc$ ]]; then
+	if ! [[ "$file" =~ [_-](Mainline|Classic|Vanilla|Wrath|WOTLKC).toc$ ]]; then
 		replace "$file"
 	elif [[ "$file" =~ [_-]Mainline.toc$ ]]; then
 		replace "$file" 'mainline'
 	elif [[ "$file" =~ [_-](Classic|Vanilla).toc$ ]]; then
 		replace "$file" 'classic'
-	elif [[ "$file" =~ [_-](BCC|TBC).toc$ ]]; then
-		replace "$file" 'bcc'
 	elif [[ "$file" =~ [_-](Wrath|WOTLKC).toc$ ]]; then
 		replace "$file" 'wrath'
 	fi
