@@ -34,11 +34,14 @@ Only GNU versions are officially supported, Busybox alternatives (or others) hav
 
 Then run the script:
 ```bash
-bash update.sh         # use the default flavor
-bash update.sh classic # set Classic as the default Interface version
+bash update.sh              # use the default flavor
+bash update.sh classic      # set Classic as the default Interface version
+bash update.sh classic true # set Classic as the default Interface version, and check beta/ptr versions
 ```
 
-The only argument the script takes is the [flavor](#flavor).
+The script uses positional arguments:
+1. arg1 is the [flavor](#flavor)
+2. arg2 can be defined if beta/PTR versions should be checked
 
 ## GitHub Action
 
@@ -46,6 +49,7 @@ You can use this in a GitHub action workflow by referencing `p3lim/toc-interface
 
 Options:
 - `flavor` - sets the fallback game version for unsuffixed TOC files, see [flavor](#flavor) for valid options
+- `future` - set to `true` if beta/PTR versions should be checked too
 
 #### Example
 
@@ -74,6 +78,7 @@ jobs:
         uses: p3lim/toc-interface-updater@v3
         with:
           flavor: retail # this is the default
+          future: true   # this is optional
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v5
