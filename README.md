@@ -1,10 +1,10 @@
 # TOC Interface Updater
 
-This script will parse [World of Warcraft AddOn metadata files (TOC)](https://wowpedia.fandom.com/wiki/TOC_format) and update the Interface version(s) to the most recent version(s) of the game according to the [WoWInterface API](https://www.wowinterface.com/forums/showthread.php?s=11c51a8909d2cf65c6d0a0afba2a5d75&t=51835).
+This script will parse [World of Warcraft AddOn metadata files (TOC)](https://warcraft.wiki.gg/wiki/TOC_format) and update the Interface version(s) to the most recent version(s) of the game according to the [WoWInterface API](https://www.wowinterface.com/forums/showthread.php?s=11c51a8909d2cf65c6d0a0afba2a5d75&t=51835).
 
 #### Multiple client flavours
 
-This script supports updating the [multiple TOC files](https://wowpedia.fandom.com/wiki/TOC_format#Multiple_client_flavors) the game officially supports, such as:
+This script supports updating the [multiple TOC files](https://warcraft.wiki.gg/wiki/TOC_format#Multiple_client_flavors) the game officially supports, such as:
 
 - `MyAddon.toc` (default)
 - `MyAddon_Mainline.toc` (Retail)
