@@ -82,12 +82,6 @@ function replace {
 	if [[ -z "$version" ]]; then
 		# replace the interface version value based on the defined fallback game version
 		sed -ri "s/^(## Interface:).*\$/\1 ${versions[$BASE_VERSION]}/" "$file"
-
-		# replace game-specific interface version values supported by the BigWigs packager
-		sed -ri "s/^(## Interface-Retail:).*\$/\1 ${versions[mainline]}/" "$file"
-		sed -ri "s/^(## Interface-Classic:).*\$/\1 ${versions[classic]}/" "$file"
-		sed -ri "s/^(## Interface-BCC:).*\$/\1 ${versions[bcc]}/" "$file"
-		sed -ri "s/^(## Interface-Wrath:).*\$/\1 ${versions[wrath]}/" "$file"
 	else
 		# replace the interface version value
 		sed -ri "s/^(## Interface:).*\$/\1 ${versions[$version]}/" "$file"

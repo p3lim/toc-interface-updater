@@ -12,36 +12,11 @@ This script supports updating the [multiple TOC files](https://wowpedia.fandom.c
 - `MyAddon_TBC.toc` (Burning Crusade Classic)
 - `MyAddon_Wrath.toc` (Wrath of the Lich King Classic)
 
-It also supports legacy alternatives, although you should avoid using these:
-
-- `MyAddon-Mainline.toc` (Retail)
-- `MyAddon-Vanilla.toc` (Classic Era)
-- `MyAddon_Classic.toc` (Classic Era)
-- `MyAddon-Classic.toc` (Classic Era)
-- `MyAddon-TBC.toc` (Burning Crusade Classic)
-- `MyAddon_BCC.toc` (Burning Crusade Classic)
-- `MyAddon-BCC.toc` (Burning Crusade Classic)
-- `MyAddon-Wrath.toc` (Wrath of the Lich King Classic)
-- `MyAddon_WOTLKC.toc` (Wrath of the Lich King Classic)
-- `MyAddon-WOTLKC.toc` (Wrath of the Lich King Classic)
-
-#### Multiple Interface versions
-
-This script supports updating the [multiple Interface types used in BigWigs' packager](https://github.com/BigWigsMods/packager#single-toc-file), such as:
-
-```
-## Interface: NNNNN
-## Interface-Retail: NNNNN
-## Interface-Classic: NNNNN
-## Interface-BCC: NNNNN
-## Interface-Wrath: NNNNN
-```
-
-This is a deprecated feature, [multiple client flavours](#multiple-client-flavours) should be used instead.
+It also supports legacy alternatives, although you should avoid using those.
 
 #### Base version
 
-The interface version used for the default `MyAddon.toc` (and `## Interface: ` in case of [multiple interface version](#multiple-interface-versions)).
+The interface version used for the default `MyAddon.toc` is defined by passing the flavor to the script, which can be any of the following:
 
 - `mainline` (Retail)
 - `vanilla` (Classic Era)
