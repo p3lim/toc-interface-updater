@@ -45,7 +45,7 @@ The script uses positional arguments:
 
 ## GitHub Action
 
-You can use this in a GitHub action workflow by referencing `p3lim/toc-interface-updater@v3`.
+You can use this in a GitHub workflow by referencing `p3lim/toc-interface-updater@v3`.
 
 Options:
 - `flavor` - sets the fallback game version for unsuffixed TOC files, see [flavor](#flavor) for valid options
