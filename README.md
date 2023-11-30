@@ -29,7 +29,7 @@ The script will default to `retail` unless specified.
 
 ## Usage
 
-You'll need `bash >= 4.0`, `md5sum`, `nc`, `awk`, `sed`, `tr` and `find` installed on your system.  
+You'll need `bash >= 4.0`, `md5sum`, `nc`, `awk`, `sed` and `find` installed on your system.  
 Only GNU versions are officially supported, Busybox alternatives (or others) have not been tested.
 
 Then run the script:

@@ -36,11 +36,11 @@ function replace {
 	# classic_era needs to be handled differently
 	if [[ "$version" == 1.* ]]; then
 		# strip away major-minor delimiter
-		version="$(sed 's/\.//' <<< "$version")"
+		version="${version/./}"
 	fi
 
 	# replace delimiters with 0, creating the interface version
-	version="$(tr . 0 <<< "$version")"
+	version="${version//./0}"
 
 	# replace the interface version value in the file
 	sed -ri "s/^(## Interface:).*\$/\1 ${version}/" "$file"
