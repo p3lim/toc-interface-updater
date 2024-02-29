@@ -60,6 +60,8 @@ function replace {
 	local product="${2:-$PRODUCT}"
 	local multi="${3:-false}"
 
+	echo "Checking $file ($product)"
+
 	# generate a hash of the file before we potentially modify it
 	local checksum
 	checksum="$(md5sum "$file")"
@@ -121,6 +123,8 @@ function replace {
 	# output file status
 	if [[ "$(md5sum "$file")" != "$checksum" ]]; then
 		echo "Updated $file ($product)"
+	else
+		echo "No changes to $file ($product)"
 	fi
 }
 
