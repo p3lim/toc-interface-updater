@@ -58,6 +58,7 @@ function product_version {
 function replace {
 	local file="$1"
 	local product="${2:-$PRODUCT}"
+	local multi="${3:-false}"
 
 	# generate a hash of the file before we potentially modify it
 	local checksum
@@ -103,12 +104,23 @@ function replace {
 		fi
 	fi
 
-	# replace the interface version value in the file
-	sed -ri "s/^(## Interface:).*\$/\1 ${version}/" "$file"
+	if [ "$multi" = 'true' ]; then
+		# replace product suffix interface version in the file, supported by BigWigs' packager
+		if [ "$product" = 'wow_classic_era' ]; then
+			sed -ri "s/^(## Interface-Vanilla:).*\$/\1 ${version}/" "$file"
+			sed -ri "s/^(## Interface-Classic:).*\$/\1 ${version}/" "$file" # legacy suffix, remove later
+		elif [ "$product" = 'wow_classic' ]; then
+			sed -ri "s/^(## Interface-Wrath:).*\$/\1 ${version}/" "$file"
+			sed -ri "s/^(## Interface-WOTLKC:).*\$/\1 ${version}/" "$file" # legacy suffix, remove later
+		fi
+	else
+		# replace the interface version value in the file
+		sed -ri "s/^(## Interface:).*\$/\1 ${version}/" "$file"
+	fi
 
 	# output file status
 	if [[ "$(md5sum "$file")" != "$checksum" ]]; then
-		echo "Updated $file"
+		echo "Updated $file ($product)"
 	fi
 }
 
@@ -116,6 +128,8 @@ function replace {
 while read -r file; do
 	if ! [[ "$file" =~ [_-](Mainline|Classic|Vanilla|Wrath|WOTLKC).toc$ ]]; then
 		replace "$file"
+		replace "$file" 'wow_classic_era' 'true'
+		replace "$file" 'wow_classic' 'true'
 	elif [[ "$file" =~ [_-]Mainline.toc$ ]]; then
 		replace "$file" 'wow'
 	elif [[ "$file" =~ [_-](Classic|Vanilla).toc$ ]]; then
