@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Update TOC Interface version
         uses: p3lim/toc-interface-updater@v3
@@ -85,7 +85,7 @@ jobs:
           future: true   # this is optional
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
           title: Update Interface version
           commit-message: Update Interface version
