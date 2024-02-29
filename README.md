@@ -27,6 +27,10 @@ The interface version used for the default `MyAddon.toc` is defined by passing t
 
 The script will default to `retail` unless specified.
 
+#### Single-TOC multi-flavor
+
+One of [BigWigs' packager](https://github.com/BigWigsMods/packager/?tab=readme-ov-file#single-toc-file) features is the ability for it to automatically create TOC files for flavors based on `## Interface` suffixes. This script will also check for those.
+
 ## Usage
 
 You'll need `bash >= 4.0`, `md5sum`, `nc`, `awk`, `sed` and `find` installed on your system.  
