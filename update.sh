@@ -130,13 +130,13 @@ function replace {
 
 # update TOC files
 while read -r file; do
-	if ! [[ "$file" =~ [_-](Mainline|Classic|Vanilla|Wrath|WOTLKC).toc$ ]]; then
+	if ! [[ "$file" =~ [_-](Mainline|Vanilla|Classic|Wrath|WOTLKC).toc$ ]]; then
 		replace "$file"
 		replace "$file" 'wow_classic_era' 'true'
 		replace "$file" 'wow_classic' 'true'
 	elif [[ "$file" =~ [_-]Mainline.toc$ ]]; then
 		replace "$file" 'wow'
-	elif [[ "$file" =~ [_-](Classic|Vanilla).toc$ ]]; then
+	elif [[ "$file" =~ [_-](Vanilla|Classic).toc$ ]]; then
 		replace "$file" 'wow_classic_era'
 	elif [[ "$file" =~ [_-](Wrath|WOTLKC).toc$ ]]; then
 		replace "$file" 'wow_classic'
