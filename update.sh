@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -o errexit -o pipefail -o nounset
+
 FLAVOR="${1:-retail}"
 FUTURE="$2"
 if [[ ! "${FUTURE,,}" =~ ^(y|yes|true|1)$ ]]; then
