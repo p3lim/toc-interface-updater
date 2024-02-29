@@ -23,25 +23,35 @@ case "$FLAVOR" in
 		;;
 esac
 
+declare -A versions
 function product_version {
 	local product="$1"
 
-	# grab version from CDN, get the version field
-	version="$(nc 'us.version.battle.net' 1119 <<< "v1/products/$product/versions" | awk -F'|' '/^us/{print $6}')"
+	# check if version is cached
+	if [ "${versions[$product]+x}" ]; then
+		# return cached version
+		echo "${versions[$product]}"
+	else
+		# grab version from CDN, get the version field
+		version="$(nc 'us.version.battle.net' 1119 <<< "v1/products/$product/versions" | awk -F'|' '/^us/{print $6}')"
 
-	# strip away build number
-	version="${version%.*}"
+		# strip away build number
+		version="${version%.*}"
 
-	# classic_era needs to be handled differently
-	if [[ "$version" == 1.* ]]; then
-		# strip away major-minor delimiter
-		version="${version/./}"
+		# classic_era needs to be handled differently
+		if [[ "$version" == 1.* ]]; then
+			# strip away major-minor delimiter
+			version="${version/./}"
+		fi
+
+		# replace delimiters with 0, creating the interface version
+		version="${version//./0}"
+
+		# cache version
+		versions[$product]="$version"
+
+		echo "$version"
 	fi
-
-	# replace delimiters with 0, creating the interface version
-	version="${version//./0}"
-
-	echo "$version"
 }
 
 # define function to update interface version in TOC files
