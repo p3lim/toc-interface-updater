@@ -131,7 +131,9 @@ function replace {
 }
 
 # update TOC files
-while read -r file; do
+#while read -r file; do
+#Also maanage subaddoons which will be moved around by packader
+for file in $(find ./ -iname "*.toc") ; do
 	if ! [[ "$file" =~ [_-](Mainline|Vanilla|Classic|Wrath|WOTLKC).toc$ ]]; then
 		replace "$file"
 		replace "$file" 'wow_classic_era' 'true'
