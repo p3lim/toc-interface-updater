@@ -143,4 +143,4 @@ while read -r file; do
 	elif [[ "$file" =~ [_-](Wrath|WOTLKC).toc$ ]]; then
 		replace "$file" 'wow_classic'
 	fi
-done < <(find -- *.toc)
+done < <(find -type f -iname '*.toc')
