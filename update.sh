@@ -13,14 +13,14 @@ case "$FLAVOR" in
 	retail|mainline)
 		PRODUCT='wow'
 		;;
-	classic_era|vanilla)
+	vanilla)
 		PRODUCT='wow_classic_era'
 		;;
-	classic|wrath|wotlk)
+	wrath|cata)
 		PRODUCT='wow_classic'
 		;;
 	*)
-		echo "Invalid flavor '$FLAVOR', must be one of retail/mainline, classic_era/vanilla, classic/wrath/wotlkc."
+		echo "Invalid flavor '$FLAVOR', must be one of retail/mainline, wrath/cata, or vanilla."
 		exit 1
 		;;
 esac
@@ -90,11 +90,6 @@ function replace {
 			if [[ "$future" -gt "$version" ]]; then
 				version="$future"
 			fi
-		elif [[ "$product" == 'wow_classic_era' ]]; then
-			future="$(product_version 'wow_classic_era_ptr')"
-			if [[ "$future" -gt "$version" ]]; then
-				version="$future"
-			fi
 		elif [[ "$product" == 'wow_classic' ]]; then
 			future="$(product_version 'wow_classic_beta')"
 			if [[ "$future" -gt "$version" ]]; then
@@ -105,6 +100,11 @@ function replace {
 			if [[ "$future" -gt "$version" ]]; then
 				version="$future"
 			fi
+		elif [[ "$product" == 'wow_classic_era' ]]; then
+			future="$(product_version 'wow_classic_era_ptr')"
+			if [[ "$future" -gt "$version" ]]; then
+				version="$future"
+			fi
 		fi
 	fi
 
@@ -112,10 +112,9 @@ function replace {
 		# replace product suffix interface version in the file, supported by BigWigs' packager
 		if [ "$product" = 'wow_classic_era' ]; then
 			sed -ri "s/^(## Interface-Vanilla:).*\$/\1 ${version}/" "$file"
-			sed -ri "s/^(## Interface-Classic:).*\$/\1 ${version}/" "$file" # legacy suffix, remove later
 		elif [ "$product" = 'wow_classic' ]; then
-			sed -ri "s/^(## Interface-Wrath:).*\$/\1 ${version}/" "$file"
-			sed -ri "s/^(## Interface-WOTLKC:).*\$/\1 ${version}/" "$file" # legacy suffix, remove later
+			sed -ri "s/^(## Interface-Wrath:).*\$/\1 ${version}/" "$file" # old suffix, remove later
+			sed -ri "s/^(## Interface-Cata:).*\$/\1 ${version}/" "$file" # old suffix, remove later
 		fi
 	else
 		# replace the interface version value in the file
@@ -132,15 +131,16 @@ function replace {
 
 # update TOC files
 while read -r file; do
-	if ! [[ "$file" =~ [_-](Mainline|Vanilla|Classic|Wrath|WOTLKC).toc$ ]]; then
+	if ! [[ "$file" =~ [_-](Mainline|Vanilla|Wrath|Cata).toc$ ]]; then
+		# assume multi-flavor
 		replace "$file"
 		replace "$file" 'wow_classic_era' 'true'
 		replace "$file" 'wow_classic' 'true'
 	elif [[ "$file" =~ [_-]Mainline.toc$ ]]; then
 		replace "$file" 'wow'
-	elif [[ "$file" =~ [_-](Vanilla|Classic).toc$ ]]; then
+	elif [[ "$file" =~ [_-](Vanilla).toc$ ]]; then
 		replace "$file" 'wow_classic_era'
-	elif [[ "$file" =~ [_-](Wrath|WOTLKC).toc$ ]]; then
+	elif [[ "$file" =~ [_-](Wrath|Cata).toc$ ]]; then
 		replace "$file" 'wow_classic'
 	fi
 done < <(find . -type f -iname '*.toc' | sed 's/^.\///')
