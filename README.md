@@ -43,7 +43,8 @@ Then run the script:
 ```bash
 bash update.sh                  # use the default flavor
 bash update.sh -f classic       # set Classic as the default Interface version
-bash update.sh -f classic -b -p # set Classic as the default Interface version, and add beta and PTR versions
+bash update.sh -f classic -b -p # set Classic as the default Interface version,
+                                # and add beta and PTR versions
 ```
 
 Run the script with `--help` to see all available options.
@@ -81,7 +82,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Update TOC Interface version
-        uses: p3lim/toc-interface-updater@v3
+        uses: p3lim/toc-interface-updater@v4
         with:
           flavor: retail # this is the default
           beta: true     # this is optional
