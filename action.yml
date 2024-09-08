@@ -7,10 +7,12 @@ inputs:
   flavor:
     description: Interface version to default to
     default: retail
-  future:
-    description: Check Interface versions from beta/PTR?
+  beta:
+    description: Include beta versions?
+  ptr:
+    description: Include PTR versions?
 runs:
   using: composite
   steps:
-    - run: bash ${{ github.action_path }}/update.sh "${{ inputs.flavor }}" "${{ inputs.future }}"
+    - run: bash ${{ github.action_path }}/update.sh -f "${{ inputs.flavor }}" "${{ inputs.beta != '' && '-b' || '' }}" "${{ inputs.ptr != '' && '-p' || '' }}"
       shell: bash

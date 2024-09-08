@@ -1,40 +1,79 @@
 #!/bin/bash
 
-set -o errexit -o pipefail -o nounset
+set -o errexit -o pipefail
 
-FLAVOR="${1:-retail}"
-FUTURE="${2:-false}"
-if [[ ! "${FUTURE,,}" =~ ^(y|yes|true|1)$ ]]; then
-	FUTURE=''
-fi
+function usage {
+	cat << EOF
+Options:
+  --beta, -b    Include beta versions
+  --ptr, -p     Include test versions
+  --flavor, -f  Fallback game flavor (retail/classic/vanilla)
+  --help, -h    Show this help text
+EOF
+}
 
-PRODUCT=
-case "$FLAVOR" in
-	retail|mainline)
-		PRODUCT='wow'
-		;;
-	vanilla)
-		PRODUCT='wow_classic_era'
-		;;
-	wrath|cata)
-		PRODUCT='wow_classic'
-		;;
-	*)
-		echo "Invalid flavor '$FLAVOR', must be one of retail/mainline, wrath/cata, or vanilla."
-		exit 1
-		;;
-esac
+BETA=false
+TEST=false
+DEFAULT='wow'
 
-declare -A versions
+while true; do
+	case "$1" in
+		--help|-h)
+			usage
+			exit 0
+			;;
+		--flavor|-f)
+			if [ -n "$2" ]; then
+				case "$2" in
+					retail|mainline)
+						DEFAULT='wow'
+						;;
+					classic|cata)
+						DEFAULT='wow_classic'
+						;;
+					classic_era|vanilla)
+						DEFAULT='wow_classic_era'
+						;;
+					*)
+						echo "Invalid flavor '$2', must be one of retail/mainline, classic/cata, or classic_era/vanilla."
+						exit 1
+						;;
+				esac
+
+				shift 2
+			else
+				echo 'Missing value'
+				exit 1
+			fi
+			;;
+		--beta|-b)
+			BETA=true
+			shift
+			;;
+		--ptr|-p)
+			TEST=true
+			shift
+			;;
+		--)
+			shift
+			break
+			;;
+		*)
+			break
+			;;
+	esac
+done
+
+declare -A version_cache
 function product_version {
 	local product="$1"
 
-	# check if version is cached
-	if [ "${versions[$product]+x}" ]; then
-		# return cached version
-		echo "${versions[$product]}"
+	if [ "${version_cache[$product]+x}" ]; then
+		# version is cached
+		echo "${version_cache[$product]}"
 	else
 		# grab version from CDN, get the version field
+		local version
 		version="$(nc 'us.version.battle.net' 1119 <<< "v1/products/$product/versions" | awk -F'|' '/^us/{print $6}')"
 
 		# strip away build number
@@ -50,16 +89,15 @@ function product_version {
 		version="${version//./0}"
 
 		# cache version
-		versions[$product]="$version"
+		version_cache[$product]="$version"
 
 		echo "$version"
 	fi
 }
 
-# define function to update interface version in TOC files
 function replace {
 	local file="$1"
-	local product="${2:-$PRODUCT}"
+	local product="$2"
 	local multi="${3:-false}"
 
 	echo "Checking $file ($product)"
@@ -68,60 +106,68 @@ function replace {
 	local checksum
 	checksum="$(md5sum "$file")"
 
-	local future
-	local version
-	version="$(product_version "$product")"
+	# get base version
+	local versions
+	versions=("$(product_version "$product")")
 
-	# if we're checking beta/ptr
-	if [ "x$FUTURE" != 'x' ]; then
-		# flavor ref: https://wago.tools
+	# iterate through beta versions and append them to the versions array
+	if $BETA; then
+		local products=()
 		if [[ "$product" == 'wow' ]]; then
-			future="$(product_version 'wow_beta')"
-			if [[ "$future" -gt "$version" ]]; then
-				version="$future"
-			fi
-
-			future="$(product_version 'wowt')" # PTR 1
-			if [[ "$future" -gt "$version" ]]; then
-				version="$future"
-			fi
-
-			future="$(product_version 'wowxptr')" # PTR 2
-			if [[ "$future" -gt "$version" ]]; then
-				version="$future"
-			fi
+			products+=('wow_beta')
 		elif [[ "$product" == 'wow_classic' ]]; then
-			future="$(product_version 'wow_classic_beta')"
-			if [[ "$future" -gt "$version" ]]; then
-				version="$future"
-			fi
-
-			future="$(product_version 'wow_classic_ptr')"
-			if [[ "$future" -gt "$version" ]]; then
-				version="$future"
-			fi
-		elif [[ "$product" == 'wow_classic_era' ]]; then
-			future="$(product_version 'wow_classic_era_ptr')"
-			if [[ "$future" -gt "$version" ]]; then
-				version="$future"
-			fi
+			products+=('wow_classic_beta')
 		fi
+
+		for p in "${products[@]}"; do
+			local version
+			version="$(product_version "$p")"
+
+			if ((version > versions[0])); then
+				versions+=("$version")
+			fi
+		done
 	fi
 
+	# iterate through test versions and append them to the versions array
+	if $TEST; then
+		local products=()
+		if [[ "$product" == 'wow' ]]; then
+			products+=('wowt') # PTR 1
+			products+=('wowxptr') # PTR 2
+		elif [[ "$product" == 'wow_classic' ]]; then
+			products+=('wow_classic_ptr')
+		elif [[ "$product" == 'wow_classic_era' ]]; then
+			products+=('wow_classic_era_ptr')
+		fi
+
+		for p in "${products[@]}"; do
+			local version
+			version="$(product_version "$p")"
+
+			if ((version > versions[0])); then
+				versions+=("$version")
+			fi
+		done
+	fi
+
+	# format multiple interface versions
+	local interface
+	interface="$(printf ", %s" "${versions[@]}")"
+	interface="${interface:2}"
+
+	# update version fields in-place
 	if [ "$multi" = 'true' ]; then
-		# replace product suffix interface version in the file, supported by BigWigs' packager
-		if [ "$product" = 'wow_classic_era' ]; then
-			sed -ri "s/^(## Interface-Vanilla:).*\$/\1 ${version}/" "$file"
-		elif [ "$product" = 'wow_classic' ]; then
-			sed -ri "s/^(## Interface-Wrath:).*\$/\1 ${version}/" "$file" # old suffix, remove later
-			sed -ri "s/^(## Interface-Cata:).*\$/\1 ${version}/" "$file" # old suffix, remove later
+		if [ "$product" = 'wow_classic' ]; then
+			sed -ri "s/^(## Interface-Cata:).*\$/\1 ${interface}/" "$file"
+		elif [ "$product" = 'wow_classic_era' ]; then
+			sed -ri "s/^(## Interface-Vanilla:).*\$/\1 ${interface}/" "$file"
 		fi
 	else
-		# replace the interface version value in the file
-		sed -ri "s/^(## Interface:).*\$/\1 ${version}/" "$file"
+		sed -ri "s/^(## Interface:).*\$/\1 ${interface}/" "$file"
 	fi
 
-	# output file status
+	# output status
 	if [[ "$(md5sum "$file")" != "$checksum" ]]; then
 		echo "Updated $file ($product)"
 	else
@@ -129,18 +175,17 @@ function replace {
 	fi
 }
 
-# update TOC files
 while read -r file; do
-	if ! [[ "$file" =~ [_-](Mainline|Vanilla|Wrath|Cata).toc$ ]]; then
+	if ! [[ "$file" =~ [_-](Mainline|Classic|Vanilla|Cata).toc$ ]]; then
 		# assume multi-flavor
-		replace "$file"
-		replace "$file" 'wow_classic_era' 'true'
+		replace "$file" "$DEFAULT"
 		replace "$file" 'wow_classic' 'true'
-	elif [[ "$file" =~ [_-]Mainline.toc$ ]]; then
+		replace "$file" 'wow_classic_era' 'true'
+	elif [[ "$file" =~ [_-](Mainline).toc$ ]]; then
 		replace "$file" 'wow'
+	elif [[ "$file" =~ [_-](Classic|Cata).toc$ ]]; then
+		replace "$file" 'wow_classic'
 	elif [[ "$file" =~ [_-](Vanilla).toc$ ]]; then
 		replace "$file" 'wow_classic_era'
-	elif [[ "$file" =~ [_-](Wrath|Cata).toc$ ]]; then
-		replace "$file" 'wow_classic'
 	fi
 done < <(find . -type f -iname '*.toc' | sed 's/^.\///')
