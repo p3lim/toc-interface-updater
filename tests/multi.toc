@@ -1,7 +1,6 @@
-## Interface: 70300
-## Interface-Vanilla: 10300
-## Interface-Classic: 10300
-## Interface-Wrath: 30401
-## Interface-WOTLKC: 30401
+## Interface: 110002
+## Interface-Vanilla: 11504
+## Interface-Classic: 40400
+## Interface-Cata: 40400
 
 file.lua
