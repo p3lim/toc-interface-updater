@@ -20,5 +20,5 @@ runs:
         python-version: '3.x'
     
     - name: Run the TOC updater script
-      run: python3 ${{ github.action_path }}/update.py -f "${{ inputs.flavor }}" "${{ inputs.beta != '' && '-b' || '' }}" "${{ inputs.ptr != '' && '-p' || '' }}"
+      run: python3 ${{ github.action_path }}/update.py -f ${{ inputs.flavor }} ${{ inputs.beta != '' && '-b' || '' }} ${{ inputs.ptr != '' && '-p' || '' }}
       shell: bash

@@ -1,4 +1,5 @@
 import argparse
+from enum import Enum
 import hashlib
 import os
 import re
@@ -139,16 +140,36 @@ def replace(file, product, multi, beta, test, version_cache, modified_files):
     checksum_after = hashlib.md5(updated_content.encode()).hexdigest()
 
 
+class GameFlavor(Enum):
+    WOW = 'wow'
+    WOW_CLASSIC = 'wow_classic'
+    WOW_CLASSIC_ERA = 'wow_classic_era'
+
+
+def flavor_type(value):
+    flavor_map = {
+        'retail': GameFlavor.WOW,
+        'mainline': GameFlavor.WOW,
+        'classic': GameFlavor.WOW_CLASSIC,
+        'cata': GameFlavor.WOW_CLASSIC,
+        'classic_era': GameFlavor.WOW_CLASSIC_ERA,
+        'vanilla': GameFlavor.WOW_CLASSIC_ERA
+    }
+    if value.lower() not in flavor_map:
+        raise argparse.ArgumentTypeError(f"Invalid flavor: {value}. Allowed values are: {', '.join(flavor_map.keys())}")
+    return flavor_map[value.lower()]
+
+
 def main():
     parser = argparse.ArgumentParser(description='Version Replacer')
     parser.add_argument('-b', '--beta', action='store_true', help='Include beta versions')
     parser.add_argument('-p', '--ptr', action='store_true', help='Include test versions')
-    parser.add_argument('-f', '--flavor', default='wow', help='Fallback game flavor')
+    parser.add_argument('-f', '--flavor', type=flavor_type, default=GameFlavor.WOW, help='Game flavor (retail, mainline, classic, cata, classic_era, vanilla)')
     args = parser.parse_args()
 
     beta = args.beta
     test = args.ptr
-    default = args.flavor
+    flavor = args.flavor.value
 
     version_cache = {}
     modified_files = []
@@ -162,7 +183,7 @@ def main():
                 file_path = os.path.join(root, file)
                 # Check if the file matches the pattern (with both _ and - support)
                 if not pattern.search(file_path):
-                    replace(file_path, default, 'false', beta, test, version_cache, modified_files)
+                    replace(file_path, flavor, 'false', beta, test, version_cache, modified_files)
                     replace(file_path, 'wow_classic', 'true', beta, test, version_cache, modified_files)
                     replace(file_path, 'wow_classic_era', 'true', beta, test, version_cache, modified_files)
                 elif pattern.search(file_path):
