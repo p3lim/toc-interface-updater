@@ -19,10 +19,6 @@ runs:
       with:
         python-version: '3.x'
 
-    - name: debug
-      run: ls ${{ github.action_path }}
-      shell: bash
-    
     - name: Run the TOC updater script
-      run: python3 ${{ github.action_path }}/update.py -f ${{ inputs.flavor }} ${{ inputs.beta != '' && '-b' || '' }} ${{ inputs.ptr != '' && '-p' || '' }}
+      run: python3 ${GITHUB_ACTION_PATH}/update.py -f ${{ inputs.flavor }} ${{ inputs.beta != '' && '-b' || '' }} ${{ inputs.ptr != '' && '-p' || '' }}
       shell: bash
