@@ -14,6 +14,8 @@ LIGHT_BLUE = "\033[94m"
 GREEN = "\033[32m"
 YELLOW = "\033[33m"
 
+line_ending = "\n"
+
 
 def product_version(product, version_cache):
     if product in version_cache:
@@ -56,10 +58,13 @@ def product_version(product, version_cache):
 
 def detect_line_ending(content):
     if '\r\n' in content:
+        print("Detected CRLF")
         return '\r\n'
     elif '\r' in content:
+        print("Detected CR")
         return '\r'
     else:
+        print("Detected LF (or unknown)")
         return '\n'
 
 
@@ -69,9 +74,6 @@ def replace(file, product, multi, beta, test, version_cache, modified_files):
     # Read the original file content
     with open(file, 'r') as f:
         original_content = f.read()
-
-    # Detect original line ending style
-    line_ending = detect_line_ending(original_content)
 
     # Normalize line endings for comparison (convert to Unix-style \n for processing)
     original_content_normalized = original_content.replace('\r\n', '\n').replace('\r', '\n')
@@ -133,9 +135,9 @@ def replace(file, product, multi, beta, test, version_cache, modified_files):
             f.write(updated_content_with_original_line_endings)
 
         modified_files.append(file)
-        print(f"{GREEN}Updated")
+        print(f"{GREEN}Updated{RESET}")
     else:
-        print(f"{YELLOW}No change")
+        print(f"{YELLOW}No change{RESET}")
 
     checksum_after = hashlib.md5(updated_content.encode()).hexdigest()
 
@@ -181,6 +183,9 @@ def main():
         for file in files:
             if file.endswith('.toc'):
                 file_path = os.path.join(root, file)
+                with open(file, 'r') as f:
+                    print(f"Checking line endings for {file_path}: ", end='')
+                    line_ending = detect_line_ending(f.read())
                 # Check if the file matches the pattern (with both _ and - support)
                 if not pattern.search(file_path):
                     replace(file_path, flavor, 'false', beta, test, version_cache, modified_files)
@@ -197,9 +202,9 @@ def main():
     if modified_files:
         print(f"\n{GREEN}Files modified:")
         for modified_file in modified_files:
-            print(f"{GREEN}{modified_file}")
+            print(f"{GREEN}{modified_file}{RESET}")
     else:
-        print(f"\n{YELLOW}No files were modified.")
+        print(f"\n{YELLOW}No files were modified.{RESET}")
 
 if __name__ == '__main__':
     main()
