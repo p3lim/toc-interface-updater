@@ -1,3 +1,0 @@
-## Interface: 110002
-
-file.lua

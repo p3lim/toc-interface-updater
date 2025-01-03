@@ -1,6 +1,0 @@
-## Interface: 110002
-## Interface-Vanilla: 11504
-## Interface-Classic: 40400
-## Interface-Cata: 40400
-
-file.lua

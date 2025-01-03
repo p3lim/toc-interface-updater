@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "toc-interface-updater"
+version = "0.1.0"
+description = ""
+authors = ["Rob Anderson <Mctalian@users.noreply.github.com>"]
+license = "LICENSE.txt"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.13"
+
+[tool.poetry.dev-dependencies]
+pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
