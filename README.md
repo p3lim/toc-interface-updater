@@ -51,7 +51,7 @@ Run the script with `--help` to see all available options.
 
 ## GitHub Action
 
-You can use this in a GitHub workflow by referencing `p3lim/toc-interface-updater@v3`.
+You can use this in a GitHub workflow by referencing `p3lim/toc-interface-updater`.
 
 Options:
 - `flavor` - sets the fallback game version for unsuffixed TOC files, see [flavor](#flavor) for valid options
