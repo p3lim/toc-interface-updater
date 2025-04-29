@@ -57,6 +57,7 @@ Options:
 - `flavor` - sets the fallback game version for unsuffixed TOC files, see [flavor](#flavor) for valid options
 - `beta` - set to `true` if beta versions should be appended
 - `ptr` - set to `true` if PTR versions should be appended
+- `depth` - change the recursion depth when looking for TOC files
 
 #### Example
 

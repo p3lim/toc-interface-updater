@@ -11,8 +11,10 @@ inputs:
     description: Include beta versions?
   ptr:
     description: Include PTR versions?
+  depth:
+    description: Recursion depth when looking for TOC files
 runs:
   using: composite
   steps:
-    - run: bash ${{ github.action_path }}/update.sh -f "${{ inputs.flavor }}" "${{ inputs.beta != '' && '-b' || '' }}" "${{ inputs.ptr != '' && '-p' || '' }}"
+    - run: bash ${{ github.action_path }}/update.sh ${{ inputs.flavor != '' && '-f' || '' }} "${{ inputs.flavor }}" ${{ inputs.beta != '' && '-b' || '' }} ${{ inputs.ptr != '' && '-p' || '' }} ${{ inputs.depth != '' && '-d' || '' }} "${{ inputs.depth }}"
       shell: bash

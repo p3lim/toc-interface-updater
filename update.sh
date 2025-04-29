@@ -10,6 +10,7 @@ Options:
   --beta, -b    Include beta versions
   --ptr, -p     Include test versions
   --flavor, -f  Fallback game flavor (retail/classic/vanilla)
+  --depth, -d   Set max recursion into subdirectories
   --help, -h    Show this help text
 EOF
 }
@@ -17,8 +18,9 @@ EOF
 BETA=false
 TEST=false
 DEFAULT='wow'
+DEPTH='99'
 
-args="$(getopt -n "$0" -l 'help,flavor:,beta,ptr' -o 'hf:bp' -- "$@")"
+args="$(getopt -n "$0" -l 'help,flavor:,beta,ptr,depth:' -o 'hf:bpd:' -- "$@")"
 eval set -- "$args"
 
 while [ $# -ge 1 ]; do
@@ -49,6 +51,15 @@ while [ $# -ge 1 ]; do
 			;;
 		--ptr|-p)
 			TEST=true
+			shift
+			;;
+		--depth|-d)
+			if [[ "$2" =~ ^[0-9]+$ ]]; then
+				DEPTH="$2"
+			else
+				echo 'invalid depth value'
+				exit 1
+			fi
 			shift
 			;;
 		--)
@@ -207,4 +218,4 @@ function update {
 
 while read -r file; do
 	update "$file"
-done < <(find . -type f -iname '*.toc' | sed 's/^.\///')
+done < <(find . -maxdepth "$DEPTH" -type f -iname '*.toc' | sed 's/^.\///')
