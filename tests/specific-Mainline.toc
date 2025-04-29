@@ -1,3 +1,4 @@
-## Interface: 70300
+
+## Interface: 70000
 
 file.lua

@@ -1,7 +1,21 @@
 ## Interface: 70300
-## Interface-Vanilla: 10300
-## Interface-Classic: 10300
-## Interface-Wrath: 30401
-## Interface-WOTLKC: 30401
+## Interface-Vanilla: 10300, 123123
+## Interface-Classic: 10300, invalid
+## Interface-Cata: 40000
+## Interface-Mists: 40400
+
+## Notes: foo
+## Notes-deDE: foo
+## Version: 123123
+## Author: foo
+
+## AllowLoadGameType: invalid, vanilla
 
 file.lua
+
+test.lua [AllowLoadGameType vanilla, tbc, invalid]
+[Family]\file.lua
+[Game]\file.lua
+
+
+
