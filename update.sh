@@ -26,22 +26,19 @@ while true; do
 			;;
 		--flavor|-f)
 			if [ -n "$2" ]; then
-				case "$2" in
-					retail|mainline)
-						DEFAULT='wow'
-						;;
-					classic|cata)
-						DEFAULT='wow_classic'
-						;;
-					classic_era|vanilla)
-						DEFAULT='wow_classic_era'
-						;;
-					*)
-						echo "Invalid flavor '$2', must be one of retail/mainline, classic/cata, or classic_era/vanilla."
-						exit 1
-						;;
-				esac
-
+				if [[ "${2,,}" =~ (retail|mainline) ]]; then
+					DEFAULT='wow'
+				elif [[ "${2,,}" =~ (classic_era|vanilla) ]]; then
+					DEFAULT='wow_classic_era'
+				elif [[ "${2,,}" =~ (classic|mists) ]]; then
+					DEFAULT='wow_classic'
+				elif [[ "${2,,}" =~ (cata) ]]; then
+					# DEPRECATED
+					DEFAULT='wow_classic_legacy'
+				else
+					echo "Invalid flavor '$2', must be one of: retail, mainline, classic, cata, mists, classic_era, vanilla."
+					exit 1
+				fi
 				shift 2
 			else
 				echo 'Missing value'
@@ -67,7 +64,7 @@ while true; do
 done
 
 declare -A version_cache
-function product_version {
+function get_version_cdn {
 	local product="$1"
 
 	if [ "${version_cache[$product]+x}" ]; then
@@ -97,97 +94,121 @@ function product_version {
 	fi
 }
 
-function replace {
+function get_versions {
+	local product="$1"
+
+	# get baseline version, stripping imaginary suffixes
+	local versions=()
+	versions+=("$(get_version_cdn "${product/_legacy/}")")
+
+	# check beta and test variations if applicable
+	if $BETA; then
+		if [ "$product" = 'wow' ]; then
+			local version
+			version="$(get_version_cdn 'wow_beta')"
+			if ((version > versions[0] )); then
+				versions+=("$version")
+			fi
+		elif [ "$product" = 'wow_classic' ]; then
+			local version
+			version="$(get_version_cdn 'wow_classic_beta')"
+			if ((version > versions[0] )); then
+				versions+=("$version")
+			fi
+		fi
+	fi
+
+	if $TEST; then
+		if [ "$product" = 'wow' ]; then
+			local version1
+			version1="$(get_version_cdn 'wowt')" # PTR 1
+			if ((version1 > versions[0] )); then
+				versions+=("$version1")
+			fi
+			local version2
+			version2="$(get_version_cdn 'wowxptr')" # PTR 2
+			if ((version2 > versions[0] )); then
+				versions+=("$version2")
+			fi
+		elif [ "$product" = 'wow_classic_era' ]; then
+			local version
+			version="$(get_version_cdn 'wow_classic_era_ptr')"
+			if ((version > versions[0] )); then
+				versions+=("$version")
+			fi
+		elif [ "$product" = 'wow_classic' ]; then
+			local version
+			version="$(get_version_cdn 'wow_classic_ptr')"
+			if ((version > versions[0] )); then
+				versions+=("$version")
+			fi
+		fi
+	fi
+
+	echo "${versions[@]}"
+}
+
+function replace_line {
 	local file="$1"
 	local product="$2"
-	local multi="${3:-false}"
+	local lineno="$3"
 
-	echo "Checking $file ($product)"
+	# grab versions for this product
+	local versions
+	# shellcheck disable=SC2207
+	versions=($(get_versions "$product"))
 
-	# generate a hash of the file before we potentially modify it
+	# concatinate versions
+	local interface
+	interface="$(printf ", %s" "${versions[@]}")"
+
+	# replace version(s) in-line, at specified line number if applicable
+	sed -ri "${lineno%%:*}s/^(.*:\s?).*/\1${interface:2}/" "$file"
+}
+
+function update {
+	# store hash of file before we modify it
 	local checksum
 	checksum="$(md5sum "$file")"
 
-	# get base version
-	local versions
-	versions=("$(product_version "$product")")
-
-	# iterate through beta versions and append them to the versions array
-	if $BETA; then
-		local products=()
-		if [[ "$product" == 'wow' ]]; then
-			products+=('wow_beta')
-		elif [[ "$product" == 'wow_classic' ]]; then
-			products+=('wow_classic_beta')
-		fi
-
-		for p in "${products[@]}"; do
-			local version
-			version="$(product_version "$p")"
-
-			if ((version > versions[0])); then
-				versions+=("$version")
-			fi
-		done
-	fi
-
-	# iterate through test versions and append them to the versions array
-	if $TEST; then
-		local products=()
-		if [[ "$product" == 'wow' ]]; then
-			products+=('wowt') # PTR 1
-			products+=('wowxptr') # PTR 2
-		elif [[ "$product" == 'wow_classic' ]]; then
-			products+=('wow_classic_ptr')
-		elif [[ "$product" == 'wow_classic_era' ]]; then
-			products+=('wow_classic_era_ptr')
-		fi
-
-		for p in "${products[@]}"; do
-			local version
-			version="$(product_version "$p")"
-
-			if ((version > versions[0])); then
-				versions+=("$version")
-			fi
-		done
-	fi
-
-	# format multiple interface versions
-	local interface
-	interface="$(printf ", %s" "${versions[@]}")"
-	interface="${interface:2}"
-
-	# update version fields in-place
-	if [ "$multi" = 'true' ]; then
-		if [ "$product" = 'wow_classic' ]; then
-			sed -ri "s/^(## Interface-Cata:).*\$/\1 ${interface}/" "$file"
-		elif [ "$product" = 'wow_classic_era' ]; then
-			sed -ri "s/^(## Interface-Vanilla:).*\$/\1 ${interface}/" "$file"
-		fi
+	# check filename and replace if it matches
+	if [[ "$file" =~ [_-](Mainline|Standard).toc$ ]]; then
+		replace_line "$file" 'wow'
+	elif [[ "$file" =~ [_-](Vanilla).toc$ ]]; then
+		replace_line "$file" 'wow_classic_era'
+	elif [[ "$file" =~ [_-](Classic|Mists).toc$ ]]; then
+		replace_line "$file" 'wow_classic'
+	elif [[ "$file" =~ [_-](Cata).toc$ ]]; then
+		# DEPRECATED
+		replace_line "$file" 'wow_classic_legacy' # made-up product
 	else
-		sed -ri "s/^(## Interface:).*\$/\1 ${interface}/" "$file"
+		# check multi-toc, passing the line number for each match
+		if lineno=$(grep -nE '^## Interface:' "$file"); then
+			replace_line "$file" "$DEFAULT" "$lineno"
+		fi
+		if lineno=$(grep -nE '^## Interface-Vanilla:' "$file"); then
+			replace_line "$file" 'wow_classic_era' "$lineno"
+		fi
+		if lineno=$(grep -nE '^## Interface-Classic:' "$file"); then
+			replace_line "$file" 'wow_classic' "$lineno"
+		fi
+		if lineno=$(grep -nE '^## Interface-Mists:' "$file"); then
+			replace_line "$file" 'wow_classic' "$lineno"
+		fi
+		if lineno=$(grep -nE '^## Interface-Cata:' "$file"); then
+			# DEPRECATED
+			replace_line "$file" 'wow_classic_legacy' "$lineno" # made-up product
+		fi
 	fi
 
-	# output status
+	# compare with new hash and output status
 	if [[ "$(md5sum "$file")" != "$checksum" ]]; then
-		echo "Updated $file ($product)"
+		echo "Updated $file"
 	else
-		echo "No changes to $file ($product)"
+		echo "No changes to $file"
 	fi
 }
 
 while read -r file; do
-	if ! [[ "$file" =~ [_-](Mainline|Classic|Vanilla|Cata).toc$ ]]; then
-		# assume multi-flavor
-		replace "$file" "$DEFAULT"
-		replace "$file" 'wow_classic' 'true'
-		replace "$file" 'wow_classic_era' 'true'
-	elif [[ "$file" =~ [_-](Mainline).toc$ ]]; then
-		replace "$file" 'wow'
-	elif [[ "$file" =~ [_-](Classic|Cata).toc$ ]]; then
-		replace "$file" 'wow_classic'
-	elif [[ "$file" =~ [_-](Vanilla).toc$ ]]; then
-		replace "$file" 'wow_classic_era'
-	fi
+	update "$file"
 done < <(find . -type f -iname '*.toc' | sed 's/^.\///')

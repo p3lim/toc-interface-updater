@@ -36,7 +36,7 @@ The script can optionally support Beta and PTR versions. If their versions are n
 
 ## Usage
 
-You'll need `bash >= 4.0`, `md5sum`, `nc`, `awk`, `sed` and `find` installed on your system.  
+You'll need `bash >= 4.0`, `nc`, `awk`, `sed`, `grep`, `find` and `md5sum` installed on your system.  
 Only GNU versions are officially supported, Busybox alternatives (or others) have not been tested.
 
 Then run the script:
