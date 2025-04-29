@@ -4,6 +4,8 @@ set -o errexit -o pipefail
 
 function usage {
 	cat << EOF
+$0 [OPTIONS]
+
 Options:
   --beta, -b    Include beta versions
   --ptr, -p     Include test versions
