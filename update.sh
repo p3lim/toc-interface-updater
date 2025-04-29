@@ -18,32 +18,30 @@ BETA=false
 TEST=false
 DEFAULT='wow'
 
-while true; do
+args="$(getopt -n "$0" -l 'help,flavor:,beta,ptr' -o 'hf:bp' -- "$@")"
+eval set -- "$args"
+
+while [ $# -ge 1 ]; do
 	case "$1" in
 		--help|-h)
 			usage
 			exit 0
 			;;
 		--flavor|-f)
-			if [ -n "$2" ]; then
-				if [[ "${2,,}" =~ (retail|mainline) ]]; then
-					DEFAULT='wow'
-				elif [[ "${2,,}" =~ (classic_era|vanilla) ]]; then
-					DEFAULT='wow_classic_era'
-				elif [[ "${2,,}" =~ (classic|mists) ]]; then
-					DEFAULT='wow_classic'
-				elif [[ "${2,,}" =~ (cata) ]]; then
-					# DEPRECATED
-					DEFAULT='wow_classic_legacy'
-				else
-					echo "Invalid flavor '$2', must be one of: retail, mainline, classic, cata, mists, classic_era, vanilla."
-					exit 1
-				fi
-				shift 2
+			if [[ "${2,,}" =~ (retail|mainline) ]]; then
+				DEFAULT='wow'
+			elif [[ "${2,,}" =~ (classic_era|vanilla) ]]; then
+				DEFAULT='wow_classic_era'
+			elif [[ "${2,,}" =~ (classic|mists) ]]; then
+				DEFAULT='wow_classic'
+			elif [[ "${2,,}" =~ (cata) ]]; then
+				# DEPRECATED
+				DEFAULT='wow_classic_legacy'
 			else
-				echo 'Missing value'
+				echo "invalid flavor '$2', must be one of: retail, mainline, classic, cata, mists, classic_era, vanilla."
 				exit 1
 			fi
+			shift
 			;;
 		--beta|-b)
 			BETA=true
@@ -57,10 +55,8 @@ while true; do
 			shift
 			break
 			;;
-		*)
-			break
-			;;
 	esac
+	shift
 done
 
 declare -A version_cache
