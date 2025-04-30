@@ -30,6 +30,7 @@ while [ $# -ge 1 ]; do
 			exit 0
 			;;
 		--flavor|-f)
+			# TODO: support multiple flavors at the same time
 			if [[ "${2,,}" =~ (retail|mainline) ]]; then
 				DEFAULT='wow'
 			elif [[ "${2,,}" =~ (classic_era|vanilla) ]]; then
@@ -170,7 +171,7 @@ function replace_line {
 	interface="$(printf ", %s" "${versions[@]}")"
 
 	# replace version(s) in-line, at specified line number if applicable
-	sed -ri "${lineno%%:*}s/^(.*:\s?).*/\1${interface:2}/" "$file"
+	sed -ri "${lineno%%:*}s/^(## Interface.*:)\s?.+/\1 ${interface:2}/" "$file"
 }
 
 function update {
