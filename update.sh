@@ -48,11 +48,9 @@ while [ $# -ge 1 ]; do
 			;;
 		--beta|-b)
 			BETA=true
-			shift
 			;;
 		--ptr|-p)
 			TEST=true
-			shift
 			;;
 		--depth|-d)
 			if [[ "$2" =~ ^[0-9]+$ ]]; then
