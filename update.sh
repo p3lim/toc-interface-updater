@@ -151,6 +151,9 @@ function get_versions {
 		fi
 	fi
 
+	# make sure we don't get duplicates
+	versions=($(printf "%s\n" "${versions[@]}" | sort -un))
+
 	echo "${versions[@]}"
 }
 
