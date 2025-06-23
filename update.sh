@@ -152,7 +152,7 @@ function get_versions {
 	fi
 
 	# make sure we don't get duplicates
-	versions=($(printf "%s\n" "${versions[@]}" | sort -un))
+	mapfile -t versions < <(printf "%s\n" "${versions[@]}" | sort -un)
 
 	echo "${versions[@]}"
 }
