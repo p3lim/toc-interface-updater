@@ -37,9 +37,6 @@ while [ $# -ge 1 ]; do
 				DEFAULT='wow_classic_era'
 			elif [[ "${2,,}" =~ (classic|mists) ]]; then
 				DEFAULT='wow_classic'
-			elif [[ "${2,,}" =~ (cata) ]]; then
-				# DEPRECATED
-				DEFAULT='wow_classic_legacy'
 			else
 				echo "invalid flavor '$2', must be one of: retail, mainline, classic, cata, mists, classic_era, vanilla."
 				exit 1
@@ -105,7 +102,8 @@ function get_versions {
 
 	# get baseline version, stripping imaginary suffixes
 	local versions=()
-	versions+=("$(get_version_cdn "${product/_legacy/}")")
+	# versions+=("$(get_version_cdn "${product/_legacy/}")")
+	versions+=("$(get_version_cdn "${product}")")
 
 	# check beta and test variations if applicable
 	if $BETA; then
@@ -187,9 +185,6 @@ function update {
 		replace_line "$file" 'wow_classic_era'
 	elif [[ "$file" =~ [_-](Classic|Mists).toc$ ]]; then
 		replace_line "$file" 'wow_classic'
-	elif [[ "$file" =~ [_-](Cata).toc$ ]]; then
-		# DEPRECATED
-		replace_line "$file" 'wow_classic_legacy' # made-up product
 	else
 		# check multi-toc, passing the line number for each match
 		if lineno=$(grep -nE '^## Interface:' "$file"); then
@@ -203,10 +198,6 @@ function update {
 		fi
 		if lineno=$(grep -nE '^## Interface-Mists:' "$file"); then
 			replace_line "$file" 'wow_classic' "$lineno"
-		fi
-		if lineno=$(grep -nE '^## Interface-Cata:' "$file"); then
-			# DEPRECATED
-			replace_line "$file" 'wow_classic_legacy' "$lineno" # made-up product
 		fi
 	fi
 
