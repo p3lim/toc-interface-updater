@@ -9,9 +9,7 @@ This script supports updating the [multiple TOC files](https://warcraft.wiki.gg/
 - `MyAddon.toc` (default)
 - `MyAddon_Mainline.toc` (Retail)
 - `MyAddon_Vanilla.toc` (Classic Era)
-- `MyAddon_Cata.toc` (Cataclysm Classic)
-
-It also supports legacy alternatives, although you should avoid using those.
+- `MyAddon_Mists.toc` (Mists of Pandaria Classic)
 
 #### Flavor
 
@@ -21,8 +19,8 @@ The interface version used for the default `MyAddon.toc` is defined by passing t
   - `mainline` (alias for `retail`)
 - `classic_era` (Classic Era)
   - `vanilla` (alias for `classic_era`)
-- `classic` (Cataclysm Classic)
-  - `cata` (alias for `classic`)
+- `classic` (Mists of Pandaria Classic)
+  - `mists` (alias for `classic`)
 
 The script will default to `retail` unless specified.
 
