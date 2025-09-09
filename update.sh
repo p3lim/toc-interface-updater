@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -o errexit -o pipefail
+set -TEeuo pipefail
 
 function usage {
 	cat << EOF
@@ -158,12 +158,12 @@ function get_versions {
 function replace_line {
 	local file="$1"
 	local product="$2"
-	local lineno="$3"
+	local lineno="${3:-}"
 
 	# grab versions for this product
 	local versions
-	# shellcheck disable=SC2207
-	versions=($(get_versions "$product"))
+	mapfile -t versions < <(get_versions "$product")
+	# versions=($(get_versions "$product"))
 
 	# concatinate versions
 	local interface
