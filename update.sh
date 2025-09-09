@@ -184,12 +184,14 @@ function replace_line {
 	mapfile -t versions < <(get_versions "$product")
 	# versions=($(get_versions "$product"))
 
-	# concatinate versions
-	local interface
-	interface="$(printf ", %s" "${versions[@]}")"
+	if [ -n "${versions[*]}" ]; then
+		# concatinate versions
+		local interface
+		interface="$(printf ", %s" "${versions[@]}")"
 
-	# replace version(s) in-line, at specified line number if applicable
-	sed -ri "${lineno%%:*}s/^(## Interface.*:)\s?.+/\1 ${interface:2}/" "$file"
+		# replace version(s) in-line, at specified line number if applicable
+		sed -ri "${lineno%%:*}s/^(## Interface.*:)\s?.+/\1 ${interface:2}/" "$file"
+	fi
 }
 
 function update {
