@@ -179,6 +179,8 @@ function replace_line {
 	local product="$2"
 	local lineno="${3:-}"
 
+	echo "Getting version for '$product' ..."
+
 	# grab versions for this product
 	local versions
 	mapfile -t versions < <(get_versions "$product")
