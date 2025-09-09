@@ -75,8 +75,27 @@ function get_version_cdn {
 		echo "${version_cache[$product]}"
 	else
 		# grab version from CDN, get the version field
+		local product_info
+		product_info=""
+
+		local retries
+		retries=5
+		until [ -n "$product_info" ]; do
+			if [ "$retries" -lt '5' ]; then
+				echo "No response from Blizzard, $((retries + 1)) attempts remaining" >&2
+			fi
+
+			product_info="$(nc -w 3 'us.version.battle.net' 1119 <<< "v1/products/$product/versions")"
+
+			if [ "$((retries--))" -eq '0' ]; then
+				echo "No response from Blizzard, no attempts remaining" >&2
+				exit 1 # TODO: this won't exit the script
+			fi
+		done
+
+		# grab version from info
 		local version
-		version="$(nc 'us.version.battle.net' 1119 <<< "v1/products/$product/versions" | awk -F'|' '/^us/{print $6}')"
+		version="$(awk -F'|' '/^us/{print $6}' <<< "$product_info")"
 
 		# strip away build number
 		version="${version%.*}"
