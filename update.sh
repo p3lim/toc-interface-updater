@@ -85,7 +85,7 @@ function get_version_cdn {
 				echo "No response from Blizzard, $((retries + 1)) attempts remaining" >&2
 			fi
 
-			product_info="$(nc -w 30 'us.version.battle.net' 1119 <<< "v1/products/$product/versions")"
+			product_info="$(curl -fsSL "https://us.version.battle.net/v2/products/$product/versions")"
 
 			if [ "$((retries--))" -eq '0' ]; then
 				echo "No response from Blizzard, no attempts remaining" >&2
