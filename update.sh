@@ -168,10 +168,8 @@ function get_versions {
 		fi
 	fi
 
-	# make sure we don't get duplicates
-	mapfile -t versions < <(printf "%s\n" "${versions[@]}" | sort -un)
-
-	echo "${versions[@]}"
+	# output sorted versions without duplicates
+	printf "%s\n" "${versions[@]}" | sort -un
 }
 
 function replace_line {
@@ -184,10 +182,9 @@ function replace_line {
 	# grab versions for this product
 	local versions
 	mapfile -t versions < <(get_versions "$product")
-	# versions=($(get_versions "$product"))
 
 	if [ -n "${versions[*]}" ]; then
-		# concatinate versions
+		# concatenate versions
 		local interface
 		interface="$(printf ", %s" "${versions[@]}")"
 
