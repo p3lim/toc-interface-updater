@@ -4,7 +4,7 @@ This script will parse [World of Warcraft AddOn metadata files (TOC)](https://wa
 
 #### Multiple client flavors
 
-This script supports updating the [multiple TOC files](https://warcraft.wiki.gg/wiki/TOC_format#Multiple_client_flavors) the game officially supports, such as:
+This script supports updating the [multiple TOC files](https://warcraft.wiki.gg/wiki/TOC_format#Client-specific_TOC_files) the game officially supports, such as:
 
 - `MyAddon.toc` (default)
 - `MyAddon_Mainline.toc` (Retail)
