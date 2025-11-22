@@ -9,7 +9,7 @@ $0 [OPTIONS]
 Options:
   --beta, -b    Include beta versions
   --ptr, -p     Include test versions
-  --flavor, -f  Fallback game flavor (retail/classic/vanilla)
+  --flavor, -f  Game flavor(s), can be specified multiple times
   --depth, -d   Set max recursion into subdirectories
   --help, -h    Show this help text
 EOF
@@ -17,8 +17,8 @@ EOF
 
 BETA=false
 TEST=false
-DEFAULT='wow'
 DEPTH='99'
+FLAVORS=()
 
 args="$(getopt -n "$0" -l 'help,flavor:,beta,ptr,depth:' -o 'hf:bpd:' -- "$@")"
 eval set -- "$args"
@@ -30,13 +30,12 @@ while [ $# -ge 1 ]; do
 			exit 0
 			;;
 		--flavor|-f)
-			# TODO: support multiple flavors at the same time
 			if [[ "${2,,}" =~ (retail|mainline) ]]; then
-				DEFAULT='wow'
+				FLAVORS+=('wow')
 			elif [[ "${2,,}" =~ (classic_era|vanilla) ]]; then
-				DEFAULT='wow_classic_era'
+				FLAVORS+=('wow_classic_era')
 			elif [[ "${2,,}" =~ (classic|mists) ]]; then
-				DEFAULT='wow_classic'
+				FLAVORS+=('wow_classic')
 			else
 				echo "invalid flavor '$2', must be one of: retail, mainline, classic, cata, mists, classic_era, vanilla."
 				exit 1
@@ -65,6 +64,10 @@ while [ $# -ge 1 ]; do
 	esac
 	shift
 done
+
+if [ -z "${FLAVORS[*]}" ]; then
+	FLAVORS=('wow')
+fi
 
 declare -A version_cache
 function get_version_cdn {
@@ -174,19 +177,28 @@ function get_versions {
 
 function replace_line {
 	local file="$1"
-	local product="$2"
+	local products="$2"
 	local lineno="${3:-}"
 
-	echo "Getting version for '$product' ..."
+	local all_versions
+	all_versions=()
 
-	# grab versions for this product
-	local versions
-	mapfile -t versions < <(get_versions "$product")
+	for product in ${products//,/ }; do
+		echo "Getting version for '$product' ..."
 
-	if [ -n "${versions[*]}" ]; then
+		# grab versions for this product
+		local versions
+		mapfile -t versions < <(get_versions "$product")
+
+		for version in "${versions[@]}"; do
+			all_versions+=("$version")
+		done
+	done
+
+	if [ -n "${all_versions[*]}" ]; then
 		# concatenate versions
 		local interface
-		interface="$(printf ", %s" "${versions[@]}")"
+		interface="$(printf ", %s" "${all_versions[@]}")"
 
 		# replace version(s) in-line, at specified line number if applicable
 		sed -ri "${lineno%%:*}s/^(## Interface.*:)\s?.+/\1 ${interface:2}/" "$file"
@@ -208,7 +220,8 @@ function update {
 	else
 		# check multi-toc, passing the line number for each match
 		if lineno=$(grep -nE '^## Interface:' "$file"); then
-			replace_line "$file" "$DEFAULT" "$lineno"
+			flavors="$(printf '%s,' "${FLAVORS[@]}")"
+			replace_line "$file" "${flavors%,}" "$lineno"
 		fi
 		if lineno=$(grep -nE '^## Interface-Vanilla:' "$file"); then
 			replace_line "$file" 'wow_classic_era' "$lineno"
