@@ -5,16 +5,41 @@ branding:
   color: yellow
 inputs:
   flavor:
-    description: Interface version to default to
+    description: |-
+      Game flavor(s) to check updates for.
+      Can be more than one in a multi-line string:
+
+      ```yaml
+      flavor: |-
+        retail
+        classic
+        vanilla
+      ```
     default: retail
   beta:
     description: Include beta versions?
+    type: boolean
+    default: false
   ptr:
     description: Include PTR versions?
+    type: boolean
+    default: false
   depth:
     description: Recursion depth when looking for TOC files
+    default: '99'
 runs:
   using: composite
   steps:
-    - run: bash ${{ github.action_path }}/update.sh ${{ inputs.flavor != '' && '-f' || '' }} "${{ inputs.flavor }}" ${{ inputs.beta != '' && '-b' || '' }} ${{ inputs.ptr != '' && '-p' || '' }} ${{ inputs.depth != '' && '-d' || '' }} "${{ inputs.depth }}"
+    - run: |
+        args=(--depth ${{ inputs.depth }})
+        if [ "${{ inputs.beta }}" = 'true' ]; then
+          args+=(--beta)
+        fi
+        if [ "${{ inputs.ptr }}" = 'true' ]; then
+          args+=(--ptr)
+        fi
+        while read -r flavor; do
+          args+=(--flavor "$flavor")
+        done <<< "${{ inputs.flavor }}"
+        bash ${{ github.action_path }}/update.sh "${args[@]}"
       shell: bash
