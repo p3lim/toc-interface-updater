@@ -40,7 +40,7 @@ runs:
         fi
         while read -r flavor; do
           args+=(--flavor "$flavor")
-        done < <(echo "${{ inputs.flavor }}" | xargs)
+        done < <(echo "${{ inputs.flavor }}" | head -c -1)
         echo "${args[@]}"
         bash ${{ github.action_path }}/update.sh "${args[@]}"
       shell: bash
