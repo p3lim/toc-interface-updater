@@ -13,7 +13,7 @@ This script supports updating the [multiple TOC files](https://warcraft.wiki.gg/
 
 #### Flavor
 
-The interface version used for the default `MyAddon.toc` is defined by passing the flavor to the script, which can be any of the following:
+Which game "flavor" the script should update for in the unsuffixed TOC file is defined by passing an argument to the script, which can be any of the following:
 
 - `retail` (Retail)
   - `mainline` (alias for `retail`)
@@ -22,7 +22,8 @@ The interface version used for the default `MyAddon.toc` is defined by passing t
 - `classic` (Mists of Pandaria Classic)
   - `mists` (alias for `classic`)
 
-The script will default to `retail` unless specified.
+The script will default to `retail` unless specified.  
+The script supports specifying multiple at once, which will create comma-separated interface versions.
 
 #### Single-TOC multi-flavor
 
@@ -37,12 +38,13 @@ The script can optionally support Beta and PTR versions. If their versions are n
 You'll need `bash >= 4.0`, `nc`, `awk`, `sed`, `grep`, `find`, `getopt` and `md5sum` installed on your system.  
 Only GNU versions are officially supported, Busybox alternatives (or others) have not been tested.
 
-Then run the script:
+Then run the script, some examples:
 ```bash
-bash update.sh                  # use the default flavor
-bash update.sh -f classic       # set Classic as the default Interface version
-bash update.sh -f classic -b -p # set Classic as the default Interface version,
-                                # and add beta and PTR versions
+bash update.sh                      # use the default flavor
+bash update.sh -f classic           # set Classic as the default Interface version
+bash update.sh -f classic -b -p     # set Classic as the default Interface version,
+                                    # and add beta and PTR versions
+bash update.sh -f retail -f classic # multiple flavors at once
 ```
 
 Run the script with `--help` to see all available options.
@@ -52,7 +54,13 @@ Run the script with `--help` to see all available options.
 You can use this in a GitHub workflow by referencing `p3lim/toc-interface-updater`.
 
 Options:
-- `flavor` - sets the fallback game version for unsuffixed TOC files, see [flavor](#flavor) for valid options
+- `flavor` - sets the game version for unsuffixed TOC files, see [flavor](#flavor) for valid options
+  - Multiple flavors can be specified using a multi-line string:
+    ```yaml
+    flavor: |
+      retail
+      classic
+    ```
 - `beta` - set to `true` if beta versions should be appended
 - `ptr` - set to `true` if PTR versions should be appended
 - `depth` - change the recursion depth when looking for TOC files
@@ -72,6 +80,10 @@ name: Update TOC Interface version(s)
 on:
   schedule:
     - cron: 0 12 * * *
+
+permissions: # required by the pull request action
+  contents: write
+  pull-requests: write
 
 jobs:
   run:
@@ -95,3 +107,8 @@ jobs:
           branch: interface-version
           delete-branch: true
 ```
+
+> [!IMPORTANT]
+> The workflow must be allowed to create Pull Requests for this to work properly, this is disabled by default.
+>
+> In your repository settings, under "Actions" → "General", at the bottom make sure "Allow GitHub Actions to create and approve pull requests" is **enabled**.
