@@ -41,5 +41,6 @@ runs:
         while read -r flavor; do
           args+=(--flavor "$flavor")
         done <<< "${{ inputs.flavor }}"
+        echo "${args[@]}"
         bash ${{ github.action_path }}/update.sh "${args[@]}"
       shell: bash
