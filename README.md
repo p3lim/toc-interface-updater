@@ -21,6 +21,8 @@ Which game "flavor" the script should update for in the unsuffixed TOC file is d
   - `vanilla` (alias for `classic_era`)
 - `classic` (Mists of Pandaria Classic)
   - `mists` (alias for `classic`)
+- `titan` (Titan Reforged)
+  - `wrath` (alias for `titan`)
 
 The script will default to `retail` unless specified.  
 The script supports specifying multiple at once, which will create comma-separated interface versions.
