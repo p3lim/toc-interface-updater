@@ -1,5 +1,5 @@
 ## Interface: 110207, 120000
-## Interface-Vanilla: 11508, 20505
+## Interface-Vanilla: 11508
 ## Interface-Classic: 50502, 50503
 ## Interface-Cata: 40000
 ## Interface-Mists: 50502, 50503

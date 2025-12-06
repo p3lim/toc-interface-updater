@@ -164,12 +164,12 @@ function get_versions {
 			if ((version2 > versions[0] )); then
 				versions+=("$version2")
 			fi
-		elif [ "$product" = 'wow_classic_era' ]; then
-			local version
-			version="$(get_version_cdn 'wow_classic_era_ptr')"
-			if ((version > versions[0] )); then
-				versions+=("$version")
-			fi
+		# elif [ "$product" = 'wow_classic_era' ]; then
+		# 	local version
+		# 	version="$(get_version_cdn 'wow_classic_era_ptr')"
+		# 	if ((version > versions[0] )); then
+		# 		versions+=("$version")
+		# 	fi
 		elif [ "$product" = 'wow_classic' ]; then
 			local version
 			version="$(get_version_cdn 'wow_classic_ptr')"
