@@ -38,8 +38,10 @@ while [ $# -ge 1 ]; do
 				FLAVORS+=('wow_classic')
 			elif [[ "${2,,}" =~ (titan|wrath) ]]; then
 				FLAVORS+=('wow_classic_titan')
+			elif [[ "${2,,}" =~ (tbc) ]]; then
+				FLAVORS+=('wow_classic_era_ptr')
 			else
-				echo "invalid flavor '$2', must be one of: retail, mainline, classic, mists, classic_era, vanilla, titan, wrath"
+				echo "invalid flavor '$2', must be one of: retail, mainline, classic, mists, classic_era, vanilla, titan, wrath, tbc"
 				exit 1
 			fi
 			shift
@@ -225,6 +227,8 @@ function update {
 		replace_line "$file" 'wow_classic'
 	elif [[ "$file" =~ [_-](Wrath).toc$ ]]; then
 		replace_line "$file" 'wow_classic_titan'
+	elif [[ "$file" =~ [_-](TBC).toc$ ]]; then
+		replace_line "$file" 'wow_classic_era_ptr'
 	else
 		# check multi-toc, passing the line number for each match
 		if lineno=$(grep -nE '^## Interface:' "$file"); then
@@ -242,6 +246,9 @@ function update {
 		fi
 		if lineno=$(grep -nE '^## Interface-Wrath:' "$file"); then
 			replace_line "$file" 'wow_classic_titan' "$lineno"
+		fi
+		if lineno=$(grep -nE '^## Interface-TBC:' "$file"); then
+			replace_line "$file" 'wow_classic_era_ptr' "$lineno"
 		fi
 	fi
 

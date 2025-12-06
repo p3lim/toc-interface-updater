@@ -4,6 +4,7 @@
 ## Interface-Cata: 40000
 ## Interface-Mists: 50502, 50503
 ## Interface-Wrath: 38000
+## Interface-TBC: 20505
 
 ## Notes: foo
 ## Notes-deDE: foo

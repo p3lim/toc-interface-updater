@@ -19,6 +19,7 @@ Which game "flavor" the script should update for in the unsuffixed TOC file is d
   - `mainline` (alias for `retail`)
 - `classic_era` (Classic Era)
   - `vanilla` (alias for `classic_era`)
+  - `tbc` (alias for `classic_era_ptr` (until it releases))
 - `classic` (Mists of Pandaria Classic)
   - `mists` (alias for `classic`)
 - `titan` (Titan Reforged)
