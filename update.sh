@@ -100,7 +100,7 @@ function get_version_cdn {
 
 		# grab version from info
 		local version
-		version="$(awk -F'|' '/^us/{print $6}' <<< "$product_info")"
+		version="$(awk -F'|' '/^(us|cn)/{print $6}' <<< "$product_info")"
 
 		# strip away build number
 		version="${version%.*}"
