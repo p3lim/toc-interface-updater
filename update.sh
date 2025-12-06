@@ -100,7 +100,11 @@ function get_version_cdn {
 
 		# grab version from info
 		local version
-		version="$(awk -F'|' '/^(us|cn)/{print $6}' <<< "$product_info")"
+		if [ "$product" = 'wow_classic_titan' ]; then
+			version="$(awk -F'|' '/^cn\|/{print $6}' <<< "$product_info")"
+		else
+			version="$(awk -F'|' '/^us\|/{print $6}' <<< "$product_info")"
+		fi
 
 		# strip away build number
 		version="${version%.*}"
