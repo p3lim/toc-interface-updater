@@ -1,8 +1,8 @@
-## Interface: 70300
-## Interface-Vanilla: 10300, 123123
-## Interface-Classic: 10300, invalid
+## Interface: 110207, 120000
+## Interface-Vanilla: 11508, 20505
+## Interface-Classic: 50502, 50503
 ## Interface-Cata: 40000
-## Interface-Mists: 40400
+## Interface-Mists: 50502, 50503
 ## Interface-Wrath: 38000
 
 ## Notes: foo
