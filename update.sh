@@ -38,10 +38,10 @@ while [ $# -ge 1 ]; do
 				FLAVORS+=('wow_classic')
 			elif [[ "${2,,}" =~ (titan|wrath) ]]; then
 				FLAVORS+=('wow_classic_titan')
-			elif [[ "${2,,}" =~ (tbc) ]]; then
+			elif [[ "${2,,}" =~ (classic_era_ptr|tbc) ]]; then
 				FLAVORS+=('wow_classic_era_ptr')
 			else
-				echo "invalid flavor '$2', must be one of: retail, mainline, classic, mists, classic_era, vanilla, titan, wrath, tbc"
+				echo "invalid flavor '$2', must be one of: retail, mainline, classic, mists, classic_era, vanilla, titan, wrath, classic_era_ptr, tbc"
 				exit 1
 			fi
 			shift
