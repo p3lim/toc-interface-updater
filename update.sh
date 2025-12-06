@@ -110,7 +110,7 @@ function get_version_cdn {
 		version="${version%.*}"
 
 		# classic_era and titan needs to be handled differently
-		if [[ "$version" =~ ^1.* ]] || [[ "$version" =~ ^3.* ]]; then
+		if [[ "$version" == 1.* ]] || [[ "$version" == 3.* ]]; then
 			# strip away major-minor delimiter
 			version="${version/./}"
 		fi
