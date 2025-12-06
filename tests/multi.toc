@@ -3,6 +3,7 @@
 ## Interface-Classic: 10300, invalid
 ## Interface-Cata: 40000
 ## Interface-Mists: 40400
+## Interface-Wrath: 38000
 
 ## Notes: foo
 ## Notes-deDE: foo
