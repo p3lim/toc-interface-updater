@@ -30,18 +30,21 @@ while [ $# -ge 1 ]; do
 			exit 0
 			;;
 		--flavor|-f)
+			# I wish they would just drop the fancy names at this point and just use "wow_<expansion>",
+			# because we keep having multiple expansions active at the same time and it's a hassle to
+			# keep this list up to date with all of them
 			if [[ "${2,,}" =~ (retail|mainline) ]]; then
 				FLAVORS+=('wow')
-			elif [[ "${2,,}" =~ (classic_era|vanilla) ]]; then
-				FLAVORS+=('wow_classic_era')
 			elif [[ "${2,,}" =~ (classic|mists) ]]; then
 				FLAVORS+=('wow_classic')
 			elif [[ "${2,,}" =~ (titan|wrath) ]]; then
 				FLAVORS+=('wow_classic_titan')
-			elif [[ "${2,,}" =~ (classic_era_ptr|tbc) ]]; then
-				FLAVORS+=('wow_classic_era_ptr')
+			elif [[ "${2,,}" =~ (anniversary|tbc) ]]; then
+				FLAVORS+=('wow_anniversary')
+			elif [[ "${2,,}" =~ (classic_era|vanilla) ]]; then
+				FLAVORS+=('wow_classic_era')
 			else
-				echo "invalid flavor '$2', must be one of: retail, mainline, classic, mists, classic_era, vanilla, titan, wrath, classic_era_ptr, tbc"
+				echo "invalid flavor '$2', must be one of: retail, mainline, mists, classic, wrath, titan, tbc, anniversary, vanilla, or classic_era"
 				exit 1
 			fi
 			shift
@@ -228,7 +231,7 @@ function update {
 	elif [[ "$file" =~ [_-](Wrath).toc$ ]]; then
 		replace_line "$file" 'wow_classic_titan'
 	elif [[ "$file" =~ [_-](TBC).toc$ ]]; then
-		replace_line "$file" 'wow_classic_era_ptr'
+		replace_line "$file" 'wow_anniversary'
 	else
 		# check multi-toc, passing the line number for each match
 		if lineno=$(grep -nE '^## Interface:' "$file"); then
@@ -248,7 +251,7 @@ function update {
 			replace_line "$file" 'wow_classic_titan' "$lineno"
 		fi
 		if lineno=$(grep -nE '^## Interface-TBC:' "$file"); then
-			replace_line "$file" 'wow_classic_era_ptr' "$lineno"
+			replace_line "$file" 'wow_anniversary' "$lineno"
 		fi
 	fi
 
