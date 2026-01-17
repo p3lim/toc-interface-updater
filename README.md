@@ -15,16 +15,11 @@ This script supports updating the [multiple TOC files](https://warcraft.wiki.gg/
 
 Which game "flavor" the script should update for in the unsuffixed TOC file is defined by passing an argument to the script, which can be any of the following:
 
-- `retail` (Retail)
-  - `mainline` (alias for `retail`)
-- `classic_era` (Classic Era)
-  - `vanilla` (alias for `classic_era`)
-- `classic_era_ptr` (Classic Era PTR)
-  - `tbc` (alias for `classic_era_ptr` until it releases, see [#16](https://github.com/p3lim/toc-interface-updater/issues/16#issuecomment-3620234817))
-- `classic` (Mists of Pandaria Classic)
-  - `mists` (alias for `classic`)
-- `titan` (Titan Reforged)
-  - `wrath` (alias for `titan`)
+- `retail` (aliases: `mainline`)
+- `mists` (aliases: `classic`)
+- `wrath` (aliases: `titan`)
+- `tbc` (aliases: `anniversary`)
+- `vanilla` (aliases: `classic_era`)
 
 The script will default to `retail` unless specified.  
 The script supports specifying multiple at once, which will create comma-separated interface versions.
@@ -94,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Update TOC Interface version
         uses: p3lim/toc-interface-updater@v4
@@ -104,7 +99,7 @@ jobs:
           ptr: true      # this is optional
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           title: Update Interface version
           commit-message: Update Interface version
