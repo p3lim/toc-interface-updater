@@ -227,7 +227,7 @@ function update {
 	elif [[ "$file" =~ [_-](Mists|Classic).toc$ ]]; then
 		replace_line "$file" 'wow_classic'
 	elif [[ "$file" =~ [_-](Cata).toc$ ]]; then
-		# noop to avoid confusion
+		: # noop to avoid confusion
 	elif [[ "$file" =~ [_-](Wrath).toc$ ]]; then
 		replace_line "$file" 'wow_classic_titan'
 	elif [[ "$file" =~ [_-](TBC).toc$ ]]; then
@@ -253,7 +253,7 @@ function update {
 			replace_line "$file" 'wow_classic' "$lineno"
 		fi
 		if lineno=$(grep -nE '^## Interface-Cata:' "$file"); then
-			# noop to avoid confusion
+			: # noop to avoid confusion
 		fi
 		if lineno=$(grep -nE '^## Interface-Wrath:' "$file"); then
 			replace_line "$file" 'wow_classic_titan' "$lineno"
