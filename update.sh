@@ -222,22 +222,27 @@ function update {
 	checksum="$(md5sum "$file")"
 
 	# check filename and replace if it matches
-	if [[ "$file" =~ [_-](Mainline|Standard).toc$ ]]; then
+	if [[ "$file" =~ [_-](Standard|Mainline).toc$ ]]; then
 		replace_line "$file" 'wow'
-	elif [[ "$file" =~ [_-](Vanilla).toc$ ]]; then
-		replace_line "$file" 'wow_classic_era'
-	elif [[ "$file" =~ [_-](Classic|Mists).toc$ ]]; then
+	elif [[ "$file" =~ [_-](Mists|Classic).toc$ ]]; then
 		replace_line "$file" 'wow_classic'
+	elif [[ "$file" =~ [_-](Cata).toc$ ]]; then
+		# noop to avoid confusion
 	elif [[ "$file" =~ [_-](Wrath).toc$ ]]; then
 		replace_line "$file" 'wow_classic_titan'
 	elif [[ "$file" =~ [_-](TBC).toc$ ]]; then
 		replace_line "$file" 'wow_anniversary'
+	elif [[ "$file" =~ [_-](Vanilla).toc$ ]]; then
+		replace_line "$file" 'wow_classic_era'
 	else
 		# check multi-toc, passing the line number for each match
 		if lineno=$(grep -nE '^## Interface:' "$file"); then
 			flavors="$(printf '%s,' "${FLAVORS[@]}")"
 			replace_line "$file" "${flavors%,}" "$lineno"
 		fi
+
+		# BigWigs' packager "Single TOC file" support
+		# https://github.com/BigWigsMods/packager#single-toc-file
 		if lineno=$(grep -nE '^## Interface-Vanilla:' "$file"); then
 			replace_line "$file" 'wow_classic_era' "$lineno"
 		fi
@@ -246,6 +251,9 @@ function update {
 		fi
 		if lineno=$(grep -nE '^## Interface-Mists:' "$file"); then
 			replace_line "$file" 'wow_classic' "$lineno"
+		fi
+		if lineno=$(grep -nE '^## Interface-Cata:' "$file"); then
+			# noop to avoid confusion
 		fi
 		if lineno=$(grep -nE '^## Interface-Wrath:' "$file"); then
 			replace_line "$file" 'wow_classic_titan' "$lineno"
