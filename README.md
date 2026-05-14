@@ -108,6 +108,6 @@ jobs:
 ```
 
 > [!IMPORTANT]
-> The workflow must be allowed to create Pull Requests for this to work properly, this is disabled by default.
+> The workflow must be allowed to create Pull Requests for this example to work properly (specifically the last step), this is disabled by default.
 >
 > In your repository settings, under "Actions" → "General", at the bottom make sure "Allow GitHub Actions to create and approve pull requests" is **enabled**.
