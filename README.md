@@ -16,6 +16,7 @@ This script supports updating the [multiple TOC files](https://warcraft.wiki.gg/
 Which game "flavor" the script should update for in the unsuffixed TOC file is defined by passing an argument to the script, which can be any of the following:
 
 - `retail` (aliases: `mainline`)
+- `forever` (aliases: `camelot`)
 - `mists` (aliases: `classic`)
 - `wrath` (aliases: `titan`)
 - `tbc` (aliases: `anniversary`)

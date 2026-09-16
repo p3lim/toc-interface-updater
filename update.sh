@@ -35,6 +35,8 @@ while [ $# -ge 1 ]; do
 			# keep this list up to date with all of them
 			if [[ "${2,,}" =~ (retail|mainline) ]]; then
 				FLAVORS+=('wow')
+			elif [[ "${2,,}" =~ (forever|camelot) ]]; then
+				FLAVORS+=('wow_classic_beta') # unsure yet, no builds exist until we get close to release
 			elif [[ "${2,,}" =~ (classic|mists) ]]; then
 				FLAVORS+=('wow_classic')
 			elif [[ "${2,,}" =~ (titan|wrath) ]]; then
@@ -152,6 +154,13 @@ function get_versions {
 			if ((version > versions[0] )); then
 				versions+=("$version")
 			fi
+		elif [ "$product" = 'wow_forever' ]; then
+			# they use wow_classic_beta for this during the beta
+			local version
+			version="$(get_version_cdn 'wow_classic_beta')"
+			if ((version > versions[0] )); then
+				versions+=("$version")
+			fi
 		fi
 	fi
 
@@ -224,6 +233,8 @@ function update {
 	# check filename and replace if it matches
 	if [[ "$file" =~ [_-](Standard|Mainline).toc$ ]]; then
 		replace_line "$file" 'wow'
+	elif [[ "$file" =~ [_-](Camelot)$ ]]; then
+		replace_line "$file" 'wow_forever'
 	elif [[ "$file" =~ [_-](Mists|Classic).toc$ ]]; then
 		replace_line "$file" 'wow_classic'
 	elif [[ "$file" =~ [_-](Cata).toc$ ]]; then
@@ -243,6 +254,9 @@ function update {
 
 		# BigWigs' packager "Single TOC file" support
 		# https://github.com/BigWigsMods/packager#single-toc-file
+		if lineno=$(grep -nE '^## Interface-Camelot:' "$file"); then
+			replace_line "$file" 'wow_forever' "$lineno"
+		fi
 		if lineno=$(grep -nE '^## Interface-Vanilla:' "$file"); then
 			replace_line "$file" 'wow_classic_era' "$lineno"
 		fi
