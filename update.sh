@@ -33,7 +33,7 @@ while [ $# -ge 1 ]; do
 			# I wish they would just drop the fancy names at this point and just use "wow_<expansion>",
 			# because we keep having multiple expansions active at the same time and it's a hassle to
 			# keep this list up to date with all of them
-			if [[ "${2,,}" =~ (retail|mainline) ]]; then
+			if [[ "${2,,}" =~ (retail|standard) ]]; then
 				FLAVORS+=('wow')
 			elif [[ "${2,,}" =~ (forever|camelot) ]]; then
 				FLAVORS+=('wow_classic_beta') # unsure yet, no builds exist until we get close to release
@@ -46,7 +46,7 @@ while [ $# -ge 1 ]; do
 			elif [[ "${2,,}" =~ (classic_era|vanilla) ]]; then
 				FLAVORS+=('wow_classic_era')
 			else
-				echo "invalid flavor '$2', must be one of: retail, mainline, mists, classic, wrath, titan, tbc, anniversary, vanilla, or classic_era"
+				echo "invalid flavor '$2', must be one of: retail, standard, mists, classic, wrath, titan, tbc, anniversary, vanilla, or classic_era"
 				exit 1
 			fi
 			shift
