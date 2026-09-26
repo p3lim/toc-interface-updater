@@ -36,7 +36,7 @@ while [ $# -ge 1 ]; do
 			if [[ "${2,,}" =~ (retail|standard) ]]; then
 				FLAVORS+=('wow')
 			elif [[ "${2,,}" =~ (forever|camelot) ]]; then
-				FLAVORS+=('wow_classic_beta') # unsure yet, no builds exist until we get close to release
+				FLAVORS+=('wow_classic_beta') # temporary until we get close to release
 			elif [[ "${2,,}" =~ (classic|mists) ]]; then
 				FLAVORS+=('wow_classic')
 			elif [[ "${2,,}" =~ (titan|wrath) ]]; then
@@ -46,7 +46,7 @@ while [ $# -ge 1 ]; do
 			elif [[ "${2,,}" =~ (classic_era|vanilla) ]]; then
 				FLAVORS+=('wow_classic_era')
 			else
-				echo "invalid flavor '$2', must be one of: retail, standard, mists, classic, wrath, titan, tbc, anniversary, vanilla, or classic_era"
+				echo "invalid flavor '$2', must be one of: retail, standard, forever, camelot, mists, classic, wrath, titan, tbc, anniversary, vanilla, or classic_era"
 				exit 1
 			fi
 			shift
