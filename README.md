@@ -4,7 +4,7 @@ This script will parse [World of Warcraft AddOn metadata files (TOC)](https://wa
 
 #### Multiple client flavors
 
-This script supports updating the [multiple TOC files](https://warcraft.wiki.gg/wiki/TOC_format#Client-specific_TOC_files) the game officially supports, such as:
+This script supports updating the [multiple TOC files](https://warcraft.wiki.gg/wiki/TOC_format#Naming) the game officially supports, such as:
 
 - `MyAddon.toc` (default)
 - `MyAddon_Mainline.toc` (Retail)
@@ -27,7 +27,7 @@ The script supports specifying multiple at once, which will create comma-separat
 
 #### Single-TOC multi-flavor
 
-One of [BigWigs' packager](https://github.com/BigWigsMods/packager/?tab=readme-ov-file#single-toc-file) features is the ability for it to automatically create TOC files for flavors based on `## Interface` suffixes. This script will also check for those.
+One of [BigWigs' packager](https://github.com/BigWigsMods/packager/?tab=readme-ov-file#single-toc-file) features is the ability for it to automatically create TOC files for flavors based on `## Interface-` suffixes. This script will also check for those.
 
 #### Beta/PTR
 
