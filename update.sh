@@ -253,6 +253,9 @@ function update {
 		if lineno=$(grep -nE '^## Interface-Camelot:' "$file"); then
 			replace_line "$file" 'wow_forever' "$lineno"
 		fi
+		if lineno=$(grep -nE '^## Interface-Forever:' "$file"); then
+			replace_line "$file" 'wow_forever' "$lineno"
+		fi
 		if lineno=$(grep -nE '^## Interface-Vanilla:' "$file"); then
 			replace_line "$file" 'wow_classic_era' "$lineno"
 		fi
