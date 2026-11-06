@@ -36,7 +36,7 @@ while [ $# -ge 1 ]; do
 			if [[ "${2,,}" =~ (retail|standard) ]]; then
 				FLAVORS+=('wow')
 			elif [[ "${2,,}" =~ (forever|camelot) ]]; then
-				FLAVORS+=('wow_classic_beta') # temporary until we get close to release
+				FLAVORS+=('wow_forever') # temporary until we get close to release
 			elif [[ "${2,,}" =~ (classic|mists) ]]; then
 				FLAVORS+=('wow_classic')
 			elif [[ "${2,,}" =~ (titan|wrath) ]]; then
@@ -137,8 +137,11 @@ function get_versions {
 
 	# get baseline version, stripping imaginary suffixes
 	local versions=()
-	# versions+=("$(get_version_cdn "${product/_legacy/}")")
-	versions+=("$(get_version_cdn "${product}")")
+	if [ "$product" = 'wow_forever' ]; then
+		versions+=("$(get_version_cdn "wowf")")
+	else
+		versions+=("$(get_version_cdn "${product}")")
+	fi
 
 	# check beta and test variations if applicable
 	if $BETA; then
@@ -149,13 +152,6 @@ function get_versions {
 				versions+=("$version")
 			fi
 		elif [ "$product" = 'wow_classic' ]; then
-			local version
-			version="$(get_version_cdn 'wow_classic_beta')"
-			if ((version > versions[0] )); then
-				versions+=("$version")
-			fi
-		elif [ "$product" = 'wow_forever' ]; then
-			# they use wow_classic_beta for this during the beta
 			local version
 			version="$(get_version_cdn 'wow_classic_beta')"
 			if ((version > versions[0] )); then
