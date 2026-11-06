@@ -229,7 +229,7 @@ function update {
 	# check filename and replace if it matches
 	if [[ "$file" =~ [_-](Standard|Mainline).toc$ ]]; then
 		replace_line "$file" 'wow'
-	elif [[ "$file" =~ [_-](Camelot)$ ]]; then
+	elif [[ "$file" =~ [_-](Camelot|Forever)$ ]]; then
 		replace_line "$file" 'wow_forever'
 	elif [[ "$file" =~ [_-](Mists|Classic).toc$ ]]; then
 		replace_line "$file" 'wow_classic'
